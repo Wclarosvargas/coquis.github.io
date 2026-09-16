@@ -181,14 +181,19 @@
         <button type="button" class="btn-scan" id="btnEscanear">
           <i class="bi bi-upc-scan"></i> Escanear código de barras
         </button>
-        <button type="button" class="btn-scan d-none" id="btnBuscarFoto">
-          <i class="bi bi-image"></i> Buscar foto con el código guardado
+        <button type="button" class="btn-scan" id="btnBuscarFoto">
+          <i class="bi bi-image"></i> Buscar foto con el código
         </button>
       </div>
 
       <div class="foto-preview d-none" id="fotoPreview">
         <img id="fotoPreviewImg" src="" alt="Foto del producto">
         <button type="button" class="btn-quitar-foto" id="btnQuitarFoto"><i class="bi bi-x-lg"></i> Quitar foto</button>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Código de barras (opcional)</label>
+        <input type="text" class="form-control" id="inputCodigoBarras" placeholder="Escaneá o escribilo a mano">
       </div>
 
       <div class="row g-3 mt-0">
