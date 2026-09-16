@@ -576,7 +576,9 @@ h1, h2, h3, .brand-name, .stat-value, .banner-title {
   display: flex; align-items: center; justify-content: center;
   font-size: 2rem;
   margin-bottom: 10px;
+  overflow: hidden;
 }
+.consumo-icon-img { width: 100%; height: 100%; }
 .consumo-nombre { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.15rem; }
 .consumo-categoria { color: var(--muted); font-size: 0.8rem; margin-bottom: 6px; }
 .consumo-stock { font-size: 0.85rem; margin-bottom: 14px; }
@@ -702,4 +704,43 @@ h1, h2, h3, .brand-name, .stat-value, .banner-title {
   color: var(--danger-bg);
   margin: 8px 0 0;
   font-weight: 700;
+}
+
+/* ---------------- Foto de producto (desde API por código de barras) ---------------- */
+
+#accionesCodigo { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+#accionesCodigo .btn-scan { margin-bottom: 0; }
+
+.foto-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+.foto-preview img {
+  width: 52px; height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: var(--beige);
+}
+.btn-quitar-foto {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  display: flex; align-items: center; gap: 4px;
+}
+.btn-quitar-foto:hover { color: var(--danger-bg); }
+
+/* Cuando el ícono de un producto es una foto real en vez de un emoji */
+img.card-emoji, img.mini-emoji, .consumo-icon-img {
+  object-fit: cover;
+  background: var(--beige);
 }
