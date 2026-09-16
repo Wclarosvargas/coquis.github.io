@@ -85,6 +85,7 @@ const Productos = {
       vencimiento: datos.vencimiento || null,
       imagen: datos.imagen || IMAGENES_POR_CATEGORIA[datos.categoria][0].emoji,
       codigoBarras: datos.codigoBarras || null,
+      imagenUrl: datos.imagenUrl || null,
     };
     productos.push(nuevo);
     Storage.guardarProductos(productos);
@@ -99,6 +100,7 @@ const Productos = {
     p.vencimiento = datos.vencimiento || null;
     p.imagen = datos.imagen || p.imagen;
     p.codigoBarras = datos.codigoBarras || p.codigoBarras || null;
+    p.imagenUrl = datos.imagenUrl || null;
     Storage.guardarProductos(productos);
   },
 
@@ -264,6 +266,15 @@ const Render = {
     return `<span class="pill-estado pill-${estado.tono}">${estado.label}</span>`;
   },
 
+  // Devuelve el ícono de un producto: la foto real si la tiene
+  // (obtenida de Open Food Facts al escanear), o su emoji como respaldo.
+  iconoHTML(p, claseTamano) {
+    if (p.imagenUrl) {
+      return `<img src="${p.imagenUrl}" class="${claseTamano}" alt="${p.nombre}" loading="lazy">`;
+    }
+    return `<span class="${claseTamano}">${p.imagen}</span>`;
+  },
+
   // ---------- Dashboard ----------
   renderDashboard() {
     const total = productos.length;
@@ -304,7 +315,7 @@ const Render = {
       ? proximos.map(({ p }) => `
         <div class="mini-row">
           <div class="mini-left">
-            <span class="mini-emoji">${p.imagen}</span>
+            ${this.iconoHTML(p, "mini-emoji")}
             <div>
               <div class="mini-name">${p.nombre}</div>
               <div class="mini-sub">${Vencimientos.textoDias(p.vencimiento)}</div>
@@ -323,7 +334,7 @@ const Render = {
           return `
           <div class="mini-row">
             <div class="mini-left">
-              <span class="mini-emoji">${p.imagen}</span>
+              ${this.iconoHTML(p, "mini-emoji")}
               <div>
                 <div class="mini-name">${p.nombre}</div>
                 <div class="mini-sub">Stock: 0</div>
@@ -383,7 +394,7 @@ const Render = {
       const cat = CATEGORIAS[p.categoria] || CATEGORIAS.otros;
       return `
         <div class="product-card">
-          <span class="card-emoji">${p.imagen}</span>
+          ${this.iconoHTML(p, "card-emoji")}
           <div class="card-nombre">${p.nombre}</div>
           <div class="card-categoria">${cat.label}</div>
           <div class="card-stock">Stock: <b>${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}</b></div>
@@ -458,7 +469,7 @@ const Render = {
         <tr>
           <td>
             <div class="prod-cell">
-              <span class="card-emoji">${p.imagen}</span>
+              ${this.iconoHTML(p, "card-emoji")}
               <span class="prod-nombre">${p.nombre}</span>
             </div>
           </td>
@@ -484,14 +495,18 @@ const Render = {
     empty.classList.add("d-none");
     btnTodos.classList.remove("d-none");
 
-    lista.innerHTML = compras.map((c) => `
+    lista.innerHTML = compras.map((c) => {
+      const prod = c.productoId ? Productos.obtener(c.productoId) : null;
+      const icono = prod ? this.iconoHTML(prod, "mini-emoji") : `<span class="mini-emoji">${c.emoji}</span>`;
+      return `
       <li>
         <input type="checkbox" data-comprado="${c.id}">
-        <span class="mini-emoji">${c.emoji}</span>
+        ${icono}
         <span class="item-nombre">${c.nombre}</span>
         ${c.productoId ? `<span class="item-sub">Repone stock</span>` : ""}
       </li>
-    `).join("");
+    `;
+    }).join("");
   },
 
   renderBadgeCompras() {
@@ -553,6 +568,7 @@ const Formularios = {
   imagenSeleccionada: null,
   idParaEliminar: null,
   codigoBarrasPendiente: null,
+  imagenUrlPendiente: null,
 
   abrirParaAgregar(codigoBarras = null) {
     this.idEnEdicion = null;
@@ -562,6 +578,8 @@ const Formularios = {
     document.getElementById("productoId").value = "";
     document.getElementById("inputCantidad").value = 1;
     this.renderImagePicker(document.getElementById("inputCategoria").value);
+    document.getElementById("btnBuscarFoto").classList.add("d-none");
+    this.setFoto(null);
     this.mostrarModal();
   },
 
@@ -569,7 +587,7 @@ const Formularios = {
     const p = Productos.obtener(id);
     if (!p) return;
     this.idEnEdicion = id;
-    this.codigoBarrasPendiente = null;
+    this.codigoBarrasPendiente = p.codigoBarras || null;
     document.getElementById("modalTitulo").textContent = "Editar producto";
     document.getElementById("productoId").value = p.id;
     document.getElementById("inputNombre").value = p.nombre;
@@ -578,7 +596,23 @@ const Formularios = {
     document.getElementById("inputVencimiento").value = p.vencimiento || "";
     this.imagenSeleccionada = p.imagen;
     this.renderImagePicker(p.categoria, p.imagen);
+
+    // "Buscar foto" solo tiene sentido si hay código guardado y todavía no hay foto.
+    document.getElementById("btnBuscarFoto").classList.toggle("d-none", !(p.codigoBarras && !p.imagenUrl));
+    this.setFoto(p.imagenUrl || null);
     this.mostrarModal();
+  },
+
+  // Muestra u oculta la vista previa de la foto obtenida por API.
+  setFoto(url) {
+    this.imagenUrlPendiente = url || null;
+    const cont = document.getElementById("fotoPreview");
+    if (this.imagenUrlPendiente) {
+      document.getElementById("fotoPreviewImg").src = this.imagenUrlPendiente;
+      cont.classList.remove("d-none");
+    } else {
+      cont.classList.add("d-none");
+    }
   },
 
   renderImagePicker(categoria, seleccionada) {
@@ -607,6 +641,7 @@ const Formularios = {
       vencimiento: document.getElementById("inputVencimiento").value,
       imagen: this.imagenSeleccionada,
       codigoBarras: this.codigoBarrasPendiente,
+      imagenUrl: this.imagenUrlPendiente,
     };
     if (!datos.nombre) return;
 
@@ -656,7 +691,9 @@ const ConsumoModal = {
     this.productoId = id;
     this.cantidadMover = 1;
 
-    document.getElementById("consumoIcon").textContent = p.imagen;
+    document.getElementById("consumoIcon").innerHTML = p.imagenUrl
+      ? `<img src="${p.imagenUrl}" class="consumo-icon-img" alt="${p.nombre}">`
+      : p.imagen;
     document.getElementById("consumoNombre").textContent = p.nombre;
     document.getElementById("consumoCategoria").textContent = (CATEGORIAS[p.categoria] || CATEGORIAS.otros).label;
     document.getElementById("consumoStockActual").textContent = `${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}`;
@@ -788,34 +825,62 @@ const Scanner = {
       return;
     }
 
-    // 2) No lo tenemos: buscamos el nombre en Open Food Facts para
+    // 2) No lo tenemos: buscamos nombre y foto en Open Food Facts para
     //    precompletar el formulario de alta.
     Toast.mostrar("Buscando producto...", "info");
 
-    fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(codigo)}.json`)
+    this.buscarEnOpenFoodFacts(codigo).then(({ nombre, categoriaSugerida, foto }) => {
+      Formularios.abrirParaAgregar(codigo);
+      document.getElementById("inputNombre").value = nombre;
+      document.getElementById("inputCategoria").value = categoriaSugerida;
+      Formularios.renderImagePicker(categoriaSugerida);
+      if (foto) Formularios.setFoto(foto);
+
+      Toast.mostrar(
+        nombre ? `Producto encontrado: "${nombre}"` : "No encontramos el producto, completá los datos",
+        nombre ? "ok" : "info"
+      );
+    });
+  },
+
+  // Búsqueda reutilizable: devuelve { nombre, categoriaSugerida, foto }.
+  // Nunca rechaza la promesa (ante error de red devuelve todo vacío),
+  // así quien la llama no necesita un .catch().
+  buscarEnOpenFoodFacts(codigo) {
+    return fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(codigo)}.json`)
       .then((r) => r.json())
       .then((data) => {
-        let nombre = "";
-        let categoriaSugerida = "otros";
         if (data && data.status === 1 && data.product) {
-          nombre = data.product.product_name || data.product.generic_name || "";
-          categoriaSugerida = this.inferirCategoria((data.product.categories || "") + " " + nombre);
+          const nombre = data.product.product_name || data.product.generic_name || "";
+          const foto = data.product.image_front_small_url || data.product.image_url || null;
+          const categoriaSugerida = this.inferirCategoria((data.product.categories || "") + " " + nombre);
+          return { nombre, categoriaSugerida, foto };
         }
-
-        Formularios.abrirParaAgregar(codigo);
-        document.getElementById("inputNombre").value = nombre;
-        document.getElementById("inputCategoria").value = categoriaSugerida;
-        Formularios.renderImagePicker(categoriaSugerida);
-
-        Toast.mostrar(
-          nombre ? `Producto encontrado: "${nombre}"` : "No encontramos el producto, completá los datos",
-          nombre ? "ok" : "info"
-        );
+        return { nombre: "", categoriaSugerida: "otros", foto: null };
       })
       .catch(() => {
-        Formularios.abrirParaAgregar(codigo);
-        Toast.mostrar("Sin conexión para buscar el producto, completá los datos a mano", "info");
+        Toast.mostrar("Sin conexión para buscar en la base de productos", "info");
+        return { nombre: "", categoriaSugerida: "otros", foto: null };
       });
+  },
+
+  // Para un producto que ya está en el inventario y tiene código
+  // guardado pero todavía no tiene foto (ej: cargado antes de esta
+  // función, o el escaneo no encontró imagen en su momento).
+  buscarFotoDeProductoActual() {
+    const id = Formularios.idEnEdicion;
+    const p = id ? Productos.obtener(id) : null;
+    if (!p || !p.codigoBarras) return;
+
+    Toast.mostrar("Buscando foto...", "info");
+    this.buscarEnOpenFoodFacts(p.codigoBarras).then(({ foto }) => {
+      if (foto) {
+        Formularios.setFoto(foto);
+        Toast.mostrar("Foto encontrada", "ok");
+      } else {
+        Toast.mostrar("No encontramos una foto para este código", "info");
+      }
+    });
   },
 };
 
@@ -888,6 +953,8 @@ function inicializarEventos() {
   document.getElementById("scannerOverlay").addEventListener("click", (e) => {
     if (e.target.id === "scannerOverlay") Scanner.cerrar();
   });
+  document.getElementById("btnBuscarFoto").addEventListener("click", () => Scanner.buscarFotoDeProductoActual());
+  document.getElementById("btnQuitarFoto").addEventListener("click", () => Formularios.setFoto(null));
 
   // --- Modal producto: cerrar ---
   document.getElementById("modalClose").addEventListener("click", () => Formularios.ocultarModal());
