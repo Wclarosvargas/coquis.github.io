@@ -1,277 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi Casa — Inventario doméstico</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Casa — Inventario doméstico</title>
 
-<!-- Bootstrap 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<!-- Tipografías -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <!-- Tipografías -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<!-- ============ SIDEBAR (desktop) ============ -->
-<nav class="sidebar d-none d-lg-flex flex-column">
-  <div class="brand">
-    <img src="mascota.png" class="mascot mascot-sm" alt="Mascota">
-    <span class="brand-name">Mi Casa</span>
-    <span class="brand-paw">🐾</span>
-  </div>
-
-  <ul class="nav-list">
-    <li><button class="nav-item active" data-view="dashboard"><i class="bi bi-house-door"></i><span>Inicio</span></button></li>
-    <li><button class="nav-item" data-view="inventario"><i class="bi bi-box-seam"></i><span>Inventario</span></button></li>
-    <li><button class="nav-item" data-view="vencimientos"><i class="bi bi-exclamation-triangle"></i><span>Vencimientos</span></button></li>
-    <li><button class="nav-item" data-view="compras"><i class="bi bi-cart3"></i><span>Compras</span><span class="badge-count" id="badgeCompras"></span></button></li>
-  </ul>
-
-  <button class="btn-add-main" id="btnAddSidebar">
-    <i class="bi bi-plus-lg"></i> Agregar producto
-  </button>
-
-  <button class="nav-item nav-item-config" type="button" title="Próximamente">
-    <i class="bi bi-gear"></i><span>Configuración</span>
-  </button>
-</nav>
-
-<!-- ============ TOPBAR (mobile) ============ -->
-<header class="topbar d-lg-none">
-  <div class="brand">
-    <img src="mascota.png" class="mascot mascot-sm" alt="Mascota">
-    <span class="brand-name">Mi Casa</span>
-  </div>
-</header>
-
-<!-- ============ MAIN ============ -->
-<main class="main-content">
-
-  <!-- ---------- VIEW: DASHBOARD ---------- -->
-  <section class="view" id="view-dashboard">
-    <h1 class="view-title">¡Hola! <span class="wave">👋</span></h1>
-    <p class="view-subtitle">Resumen de tu hogar</p>
-
-    <div class="stats-grid" id="statsGrid"><!-- JS --></div>
-
-    <div class="row g-4 mt-1">
-      <div class="col-lg-6">
-        <div class="panel">
-          <div class="panel-head">
-            <h2 class="panel-title"><i class="bi bi-alarm"></i> Próximos vencimientos</h2>
-          </div>
-          <div id="listaVencimientosProximos" class="stack"><!-- JS --></div>
-        </div>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ============ SIDEBAR (desktop) ============ -->
+    <nav class="sidebar d-none d-lg-flex flex-column">
+      <div class="brand">
+        <img src="mascota.png" class="mascot mascot-sm" alt="Mascota" />
+        <span class="brand-name">Mi Casa</span>
+        <span class="brand-paw">🐾</span>
       </div>
-      <div class="col-lg-6">
-        <div class="panel">
-          <div class="panel-head">
-            <h2 class="panel-title"><i class="bi bi-cart3"></i> Necesito comprar</h2>
-          </div>
-          <div id="listaNecesitoComprar" class="stack"><!-- JS --></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="banner-orden" id="bannerOrden">
-      <img src="mascota.png" class="mascot mascot-lg" alt="Mascota">
-      <div>
-        <div class="banner-title" id="bannerTitle">¡Todo en orden! 🐾</div>
-        <div class="banner-sub" id="bannerSub">Tenés tu casa bajo control.</div>
-      </div>
-    </div>
-  </section>
+      <ul class="nav-list">
+        <li>
+          <button class="nav-item active" data-view="dashboard">
+            <i class="bi bi-house-door"></i><span>Inicio</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-view="inventario">
+            <i class="bi bi-box-seam"></i><span>Inventario</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-view="vencimientos">
+            <i class="bi bi-exclamation-triangle"></i><span>Vencimientos</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" data-view="compras">
+            <i class="bi bi-cart3"></i><span>Compras</span
+            ><span class="badge-count" id="badgeCompras"></span>
+          </button>
+        </li>
+      </ul>
 
-  <!-- ---------- VIEW: INVENTARIO ---------- -->
-  <section class="view d-none" id="view-inventario">
-    <h1 class="view-title">Inventario</h1>
-    <p class="view-subtitle">Gestioná tus productos y mantené tu hogar bien abastecido.</p>
-
-    <div class="toolbar">
-      <div class="search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" id="inputBuscar" placeholder="Buscar productos...">
-      </div>
-      <div class="filter-group" id="filtrosEstado">
-        <button class="chip active" data-filter="todos">Todos</button>
-        <button class="chip" data-filter="disponible">Disponibles</button>
-        <button class="chip" data-filter="sin-stock">Sin stock</button>
-        <button class="chip" data-filter="por-vencer">Próximos a vencer</button>
-        <button class="chip" data-filter="vencido">Vencidos</button>
-      </div>
-      <select class="form-select filter-categoria" id="filtroCategoria">
-        <option value="todas">Todas las categorías</option>
-      </select>
-    </div>
-
-    <div class="products-grid" id="productsGrid"><!-- JS --></div>
-    <p class="empty-state d-none" id="emptyInventario">No se encontraron productos con esos filtros.</p>
-  </section>
-
-  <!-- ---------- VIEW: VENCIMIENTOS ---------- -->
-  <section class="view d-none" id="view-vencimientos">
-    <h1 class="view-title">Vencimientos</h1>
-    <p class="view-subtitle">Controlá qué productos están próximos a vencer o ya vencieron.</p>
-
-    <div class="filter-group mb-3" id="tabsVencimientos">
-      <button class="chip active" data-tab-venc="todos">Todos</button>
-      <button class="chip" data-tab-venc="proximos">Próximos a vencer</button>
-      <button class="chip" data-tab-venc="vencidos">Vencidos</button>
-      <button class="chip" data-tab-venc="sin-fecha">Sin fecha</button>
-    </div>
-
-    <div class="panel table-panel">
-      <table class="tabla-venc">
-        <thead>
-          <tr><th>Producto</th><th>Vencimiento</th><th>Estado</th></tr>
-        </thead>
-        <tbody id="tablaVencimientosBody"><!-- JS --></tbody>
-      </table>
-      <p class="empty-state d-none" id="emptyVencimientos">No hay productos en esta categoría.</p>
-    </div>
-  </section>
-
-  <!-- ---------- VIEW: COMPRAS ---------- -->
-  <section class="view d-none" id="view-compras">
-    <div class="view-head-row">
-      <div>
-        <h1 class="view-title">Lista de compras</h1>
-        <p class="view-subtitle">Agregá los productos que necesités comprar.</p>
-      </div>
-      <button class="btn-primary-app btn-add-compra-item" id="btnAbrirAgregarCompra">
+      <button class="btn-add-main" id="btnAddSidebar">
         <i class="bi bi-plus-lg"></i> Agregar producto
       </button>
-    </div>
 
-    <div class="panel">
-      <ul class="shopping-list" id="shoppingList"><!-- JS --></ul>
-      <p class="empty-state d-none" id="emptyCompras">Tu lista de compras está vacía.</p>
-      <button class="btn-outline-app w-100 mt-3 d-none" id="btnMarcarTodosComprados">
-        <i class="bi bi-check2-all"></i> Marcar todos como comprados
+      <button
+        class="nav-item nav-item-config"
+        type="button"
+        title="Próximamente"
+      >
+        <i class="bi bi-gear"></i><span>Configuración</span>
       </button>
-    </div>
-  </section>
+    </nav>
 
-</main>
+    <!-- ============ TOPBAR (mobile) ============ -->
+    <header class="topbar d-lg-none">
+      <div class="brand">
+        <img src="mascota.png" class="mascot mascot-sm" alt="Mascota" />
+        <span class="brand-name">Mi Casa</span>
+      </div>
+    </header>
 
-<!-- ============ BOTTOM NAV (mobile) — isla flotante con círculos ============ -->
-<nav class="bottom-nav d-lg-none">
-  <button class="nav-item active" data-view="dashboard"><i class="bi bi-house-door"></i></button>
-  <button class="nav-item" data-view="inventario"><i class="bi bi-box-seam"></i></button>
-  <button class="nav-item nav-item-add" id="btnAddFab"><i class="bi bi-plus-lg"></i></button>
-  <button class="nav-item" data-view="vencimientos"><i class="bi bi-exclamation-triangle"></i></button>
-  <button class="nav-item" data-view="compras"><i class="bi bi-cart3"></i><span class="badge-count" id="badgeComprasMobile"></span></button>
-</nav>
+    <!-- ============ MAIN ============ -->
+    <main class="main-content">
+      <!-- ---------- VIEW: DASHBOARD ---------- -->
+      <section class="view" id="view-dashboard">
+        <h1 class="view-title">¡Hola! <span class="wave">👋</span></h1>
+        <p class="view-subtitle">Resumen de tu hogar</p>
 
-<!-- ============ MODAL: AGREGAR / EDITAR PRODUCTO ============ -->
-<div class="modal-overlay d-none" id="modalOverlay">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3 id="modalTitulo">Agregar producto</h3>
-      <button class="modal-close" id="modalClose"><i class="bi bi-x-lg"></i></button>
-    </div>
+        <div class="stats-grid" id="statsGrid"><!-- JS --></div>
 
-    <form id="formProducto">
-      <input type="hidden" id="productoId">
-
-      <div class="row g-3">
-        <div class="col-6">
-          <label class="form-label">Nombre *</label>
-          <input type="text" class="form-control" id="inputNombre" required placeholder="Ej. Leche">
+        <div class="row g-4 mt-1">
+          <div class="col-lg-6">
+            <div class="panel">
+              <div class="panel-head">
+                <h2 class="panel-title">
+                  <i class="bi bi-alarm"></i> Próximos vencimientos
+                </h2>
+              </div>
+              <div id="listaVencimientosProximos" class="stack">
+                <!-- JS -->
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="panel">
+              <div class="panel-head">
+                <h2 class="panel-title">
+                  <i class="bi bi-cart3"></i> Necesito comprar
+                </h2>
+              </div>
+              <div id="listaNecesitoComprar" class="stack"><!-- JS --></div>
+            </div>
+          </div>
         </div>
-        <div class="col-6">
-          <label class="form-label">Categoría *</label>
-          <select class="form-select" id="inputCategoria" required></select>
+
+        <div class="banner-orden" id="bannerOrden">
+          <img src="mascota.png" class="mascot mascot-lg" alt="Mascota" />
+          <div>
+            <div class="banner-title" id="bannerTitle">¡Todo en orden! 🐾</div>
+            <div class="banner-sub" id="bannerSub">
+              Tenés tu casa bajo control.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- VIEW: INVENTARIO ---------- -->
+      <section class="view d-none" id="view-inventario">
+        <h1 class="view-title">Inventario</h1>
+        <p class="view-subtitle">
+          Gestioná tus productos y mantené tu hogar bien abastecido.
+        </p>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input
+              type="text"
+              id="inputBuscar"
+              placeholder="Buscar productos..."
+            />
+          </div>
+          <div class="filter-group" id="filtrosEstado">
+            <button class="chip active" data-filter="todos">Todos</button>
+            <button class="chip" data-filter="disponible">Disponibles</button>
+            <button class="chip" data-filter="sin-stock">Sin stock</button>
+            <button class="chip" data-filter="por-vencer">
+              Próximos a vencer
+            </button>
+            <button class="chip" data-filter="vencido">Vencidos</button>
+          </div>
+          <select class="form-select filter-categoria" id="filtroCategoria">
+            <option value="todas">Todas las categorías</option>
+          </select>
+        </div>
+
+        <div class="products-grid" id="productsGrid"><!-- JS --></div>
+      </section>
+
+      <!-- ---------- VIEW: VENCIMIENTOS ---------- -->
+      <section class="view d-none" id="view-vencimientos">
+        <h1 class="view-title">Vencimientos</h1>
+        <p class="view-subtitle">
+          Controlá qué productos están próximos a vencer o ya vencieron.
+        </p>
+
+        <div class="filter-group mb-3" id="tabsVencimientos">
+          <button class="chip active" data-tab-venc="todos">Todos</button>
+          <button class="chip" data-tab-venc="proximos">
+            Próximos a vencer
+          </button>
+          <button class="chip" data-tab-venc="vencidos">Vencidos</button>
+          <button class="chip" data-tab-venc="sin-fecha">Sin fecha</button>
+        </div>
+
+        <div class="panel table-panel">
+          <table class="tabla-venc">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaVencimientosBody">
+              <!-- JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ---------- VIEW: COMPRAS ---------- -->
+      <section class="view d-none" id="view-compras">
+        <div class="view-head-row">
+          <div>
+            <h1 class="view-title">Lista de compras</h1>
+            <p class="view-subtitle">
+              Agregá los productos que necesités comprar.
+            </p>
+          </div>
+          <button
+            class="btn-primary-app btn-add-compra-item"
+            id="btnAbrirAgregarCompra"
+          >
+            <i class="bi bi-plus-lg"></i> Agregar producto
+          </button>
+        </div>
+
+        <div class="panel">
+          <ul class="shopping-list" id="shoppingList">
+            <!-- JS -->
+          </ul>
+          <p class="empty-state d-none" id="emptyCompras">
+            Tu lista de compras está vacía.
+          </p>
+          <button
+            class="btn-outline-app w-100 mt-3 d-none"
+            id="btnMarcarTodosComprados"
+          >
+            <i class="bi bi-check2-all"></i> Marcar todos como comprados
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ BOTTOM NAV (mobile) — isla flotante con círculos ============ -->
+    <nav class="bottom-nav d-lg-none">
+      <button class="nav-item active" data-view="dashboard">
+        <i class="bi bi-house-door"></i>
+      </button>
+      <button class="nav-item" data-view="inventario">
+        <i class="bi bi-box-seam"></i>
+      </button>
+      <button class="nav-item nav-item-add" id="btnAddFab">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+      <button class="nav-item" data-view="vencimientos">
+        <i class="bi bi-exclamation-triangle"></i>
+      </button>
+      <button class="nav-item" data-view="compras">
+        <i class="bi bi-cart3"></i
+        ><span class="badge-count" id="badgeComprasMobile"></span>
+      </button>
+    </nav>
+
+    <!-- ============ MODAL: AGREGAR / EDITAR PRODUCTO ============ -->
+    <div class="modal-overlay d-none" id="modalOverlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="modalTitulo">Agregar producto</h3>
+          <button class="modal-close" id="modalClose">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <form id="formProducto">
+          <input type="hidden" id="productoId" />
+
+          <button type="button" class="btn-scan" id="btnEscanear">
+            <i class="bi bi-upc-scan"></i> Escanear código de barras
+          </button>
+
+          <div class="row g-3 mt-0">
+            <div class="col-6">
+              <label class="form-label">Nombre *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="inputNombre"
+                required
+                placeholder="Ej. Leche"
+              />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Categoría *</label>
+              <select class="form-select" id="inputCategoria" required></select>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-0">
+            <div class="col-6">
+              <label class="form-label">Cantidad *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="inputCantidad"
+                min="0"
+                required
+                value="1"
+              />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Fecha de vencimiento</label>
+              <input type="date" class="form-control" id="inputVencimiento" />
+            </div>
+          </div>
+
+          <div class="mb-3 mt-3">
+            <label class="form-label">Seleccioná una imagen</label>
+            <div class="image-picker" id="imagePicker"><!-- JS --></div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-outline-app" id="btnCancelarForm">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary-app">
+              <i class="bi bi-check2"></i> Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ MODAL: CONFIRMAR ELIMINACIÓN ============ -->
+    <div class="modal-overlay d-none" id="confirmOverlay">
+      <div class="modal-box modal-box-sm">
+        <p class="confirm-text">¿Seguro que querés eliminar este producto?</p>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn-outline-app" id="btnCancelarEliminar">
+            Cancelar
+          </button>
+          <button class="btn-danger-app" id="btnConfirmarEliminar">
+            Eliminar
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="row g-3 mt-0">
-        <div class="col-6">
-          <label class="form-label">Cantidad *</label>
-          <input type="number" class="form-control" id="inputCantidad" min="0" required value="1">
+    <!-- ============ MODAL: CONSUMIR / AGREGAR STOCK ============ -->
+    <div class="modal-overlay d-none" id="consumoOverlay">
+      <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+          <h3>Consumir producto</h3>
+          <button class="modal-close" id="consumoClose">
+            <i class="bi bi-x-lg"></i>
+          </button>
         </div>
-        <div class="col-6">
-          <label class="form-label">Fecha de vencimiento</label>
-          <input type="date" class="form-control" id="inputVencimiento">
+        <div class="consumo-body">
+          <div class="consumo-icon" id="consumoIcon">🥛</div>
+          <div class="consumo-nombre" id="consumoNombre">Leche</div>
+          <div class="consumo-categoria" id="consumoCategoria">Lácteos</div>
+          <div class="consumo-stock">
+            Stock actual: <b id="consumoStockActual">0</b>
+          </div>
+
+          <div class="stepper">
+            <button type="button" id="consumoMenos">
+              <i class="bi bi-dash"></i>
+            </button>
+            <span id="consumoCantidad">1</span>
+            <button type="button" id="consumoMas">
+              <i class="bi bi-plus"></i>
+            </button>
+          </div>
+
+          <button class="btn-primary-app w-100 mt-3" id="consumoConfirmar">
+            <i class="bi bi-check2"></i> Consumir
+          </button>
+          <button class="btn-outline-app w-100 mt-2" id="consumoAgregarStock">
+            <i class="bi bi-plus-lg"></i> Agregar
+          </button>
         </div>
       </div>
-
-      <div class="mb-3 mt-3">
-        <label class="form-label">Seleccioná una imagen</label>
-        <div class="image-picker" id="imagePicker"><!-- JS --></div>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-outline-app" id="btnCancelarForm">Cancelar</button>
-        <button type="submit" class="btn-primary-app"><i class="bi bi-check2"></i> Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ============ MODAL: CONFIRMAR ELIMINACIÓN ============ -->
-<div class="modal-overlay d-none" id="confirmOverlay">
-  <div class="modal-box modal-box-sm">
-    <p class="confirm-text">¿Seguro que querés eliminar este producto?</p>
-    <div class="modal-actions modal-actions-center">
-      <button class="btn-outline-app" id="btnCancelarEliminar">Cancelar</button>
-      <button class="btn-danger-app" id="btnConfirmarEliminar">Eliminar</button>
     </div>
-  </div>
-</div>
 
-<!-- ============ MODAL: CONSUMIR / AGREGAR STOCK ============ -->
-<div class="modal-overlay d-none" id="consumoOverlay">
-  <div class="modal-box modal-box-sm">
-    <div class="modal-header">
-      <h3>Consumir producto</h3>
-      <button class="modal-close" id="consumoClose"><i class="bi bi-x-lg"></i></button>
-    </div>
-    <div class="consumo-body">
-      <div class="consumo-icon" id="consumoIcon">🥛</div>
-      <div class="consumo-nombre" id="consumoNombre">Leche</div>
-      <div class="consumo-categoria" id="consumoCategoria">Lácteos</div>
-      <div class="consumo-stock">Stock actual: <b id="consumoStockActual">0</b></div>
-
-      <div class="stepper">
-        <button type="button" id="consumoMenos"><i class="bi bi-dash"></i></button>
-        <span id="consumoCantidad">1</span>
-        <button type="button" id="consumoMas"><i class="bi bi-plus"></i></button>
+    <!-- ============ MODAL: AGREGAR ITEM A LA LISTA DE COMPRAS ============ -->
+    <div class="modal-overlay d-none" id="compraItemOverlay">
+      <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+          <h3>Agregar a la lista</h3>
+          <button class="modal-close" id="compraItemClose">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <form id="formCompraItem">
+          <label class="form-label">Nombre del producto</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inputCompraNombre"
+            required
+            placeholder="Ej. Pan"
+          />
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-outline-app"
+              id="btnCancelarCompraItem"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary-app">
+              <i class="bi bi-check2"></i> Agregar
+            </button>
+          </div>
+        </form>
       </div>
-
-      <button class="btn-primary-app w-100 mt-3" id="consumoConfirmar"><i class="bi bi-check2"></i> Consumir</button>
-      <button class="btn-outline-app w-100 mt-2" id="consumoAgregarStock"><i class="bi bi-plus-lg"></i> Agregar</button>
     </div>
-  </div>
-</div>
 
-<!-- ============ MODAL: AGREGAR ITEM A LA LISTA DE COMPRAS ============ -->
-<div class="modal-overlay d-none" id="compraItemOverlay">
-  <div class="modal-box modal-box-sm">
-    <div class="modal-header">
-      <h3>Agregar a la lista</h3>
-      <button class="modal-close" id="compraItemClose"><i class="bi bi-x-lg"></i></button>
-    </div>
-    <form id="formCompraItem">
-      <label class="form-label">Nombre del producto</label>
-      <input type="text" class="form-control" id="inputCompraNombre" required placeholder="Ej. Pan">
-      <div class="modal-actions">
-        <button type="button" class="btn-outline-app" id="btnCancelarCompraItem">Cancelar</button>
-        <button type="submit" class="btn-primary-app"><i class="bi bi-check2"></i> Agregar</button>
+    <!-- ============ MODAL: ESCANEAR CÓDIGO DE BARRAS ============ -->
+    <div class="modal-overlay d-none" id="scannerOverlay">
+      <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+          <h3>Escanear código</h3>
+          <button class="modal-close" id="scannerClose">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div id="scannerReader"></div>
+        <p class="scanner-hint">
+          Apuntá la cámara al código de barras del producto.
+        </p>
+        <p class="scanner-error d-none" id="scannerError"></p>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
 
-<!-- ============ TOASTS (feedback de acciones) ============ -->
-<div class="toast-container" id="toastContainer"></div>
+    <!-- ============ TOASTS (feedback de acciones) ============ -->
+    <div class="toast-container" id="toastContainer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="app.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
