@@ -567,18 +567,16 @@ const Formularios = {
   idEnEdicion: null,
   imagenSeleccionada: null,
   idParaEliminar: null,
-  codigoBarrasPendiente: null,
   imagenUrlPendiente: null,
 
   abrirParaAgregar(codigoBarras = null) {
     this.idEnEdicion = null;
-    this.codigoBarrasPendiente = codigoBarras;
     document.getElementById("modalTitulo").textContent = "Agregar producto";
     document.getElementById("formProducto").reset();
     document.getElementById("productoId").value = "";
     document.getElementById("inputCantidad").value = 1;
+    document.getElementById("inputCodigoBarras").value = codigoBarras || "";
     this.renderImagePicker(document.getElementById("inputCategoria").value);
-    document.getElementById("btnBuscarFoto").classList.add("d-none");
     this.setFoto(null);
     this.mostrarModal();
   },
@@ -587,18 +585,15 @@ const Formularios = {
     const p = Productos.obtener(id);
     if (!p) return;
     this.idEnEdicion = id;
-    this.codigoBarrasPendiente = p.codigoBarras || null;
     document.getElementById("modalTitulo").textContent = "Editar producto";
     document.getElementById("productoId").value = p.id;
     document.getElementById("inputNombre").value = p.nombre;
     document.getElementById("inputCategoria").value = p.categoria;
     document.getElementById("inputCantidad").value = p.cantidad;
     document.getElementById("inputVencimiento").value = p.vencimiento || "";
+    document.getElementById("inputCodigoBarras").value = p.codigoBarras || "";
     this.imagenSeleccionada = p.imagen;
     this.renderImagePicker(p.categoria, p.imagen);
-
-    // "Buscar foto" solo tiene sentido si hay código guardado y todavía no hay foto.
-    document.getElementById("btnBuscarFoto").classList.toggle("d-none", !(p.codigoBarras && !p.imagenUrl));
     this.setFoto(p.imagenUrl || null);
     this.mostrarModal();
   },
@@ -640,7 +635,7 @@ const Formularios = {
       cantidad: document.getElementById("inputCantidad").value,
       vencimiento: document.getElementById("inputVencimiento").value,
       imagen: this.imagenSeleccionada,
-      codigoBarras: this.codigoBarrasPendiente,
+      codigoBarras: document.getElementById("inputCodigoBarras").value.trim() || null,
       imagenUrl: this.imagenUrlPendiente,
     };
     if (!datos.nombre) return;
@@ -852,7 +847,15 @@ const Scanner = {
       .then((data) => {
         if (data && data.status === 1 && data.product) {
           const nombre = data.product.product_name || data.product.generic_name || "";
-          const foto = data.product.image_front_small_url || data.product.image_url || null;
+          // Priorizamos la foto de "frente del envase" en su mejor resolución
+          // disponible: es la que realmente muestra si es lata, botella, caja, etc.
+          // Si no existe, probamos con las alternativas genéricas de la API.
+          const foto =
+            data.product.image_front_url ||
+            data.product.image_front_small_url ||
+            data.product.image_url ||
+            data.product.image_small_url ||
+            null;
           const categoriaSugerida = this.inferirCategoria((data.product.categories || "") + " " + nombre);
           return { nombre, categoriaSugerida, foto };
         }
