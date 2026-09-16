@@ -610,6 +610,33 @@ const Formularios = {
     }
   },
 
+  // Foto tomada/elegida por el usuario: la redimensionamos con un canvas
+  // antes de guardarla (si no, cada foto de celular pesaría varios MB y
+  // el localStorage se llenaría enseguida).
+  procesarFotoManual(file) {
+    if (!file) return;
+    const lector = new FileReader();
+    lector.onload = (evLector) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxLado = 480;
+        let w = img.width, h = img.height;
+        if (w > h && w > maxLado) { h = Math.round(h * (maxLado / w)); w = maxLado; }
+        else if (h >= w && h > maxLado) { w = Math.round(w * (maxLado / h)); h = maxLado; }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+
+        this.setFoto(canvas.toDataURL("image/jpeg", 0.78));
+        Toast.mostrar("Foto agregada", "ok");
+      };
+      img.src = evLector.target.result;
+    };
+    lector.readAsDataURL(file);
+  },
+
   renderImagePicker(categoria, seleccionada) {
     const opciones = IMAGENES_POR_CATEGORIA[categoria] || IMAGENES_POR_CATEGORIA.otros;
     if (!seleccionada) seleccionada = opciones[0].emoji;
@@ -871,17 +898,19 @@ const Scanner = {
   // guardado pero todavía no tiene foto (ej: cargado antes de esta
   // función, o el escaneo no encontró imagen en su momento).
   buscarFotoDeProductoActual() {
-    const id = Formularios.idEnEdicion;
-    const p = id ? Productos.obtener(id) : null;
-    if (!p || !p.codigoBarras) return;
+    const codigo = document.getElementById("inputCodigoBarras").value.trim();
+    if (!codigo) {
+      Toast.mostrar("Ingresá o escaneá un código primero", "info");
+      return;
+    }
 
     Toast.mostrar("Buscando foto...", "info");
-    this.buscarEnOpenFoodFacts(p.codigoBarras).then(({ foto }) => {
+    this.buscarEnOpenFoodFacts(codigo).then(({ foto }) => {
       if (foto) {
         Formularios.setFoto(foto);
         Toast.mostrar("Foto encontrada", "ok");
       } else {
-        Toast.mostrar("No encontramos una foto para este código", "info");
+        Toast.mostrar("No encontramos una foto para ese código", "info");
       }
     });
   },
@@ -958,6 +987,11 @@ function inicializarEventos() {
   });
   document.getElementById("btnBuscarFoto").addEventListener("click", () => Scanner.buscarFotoDeProductoActual());
   document.getElementById("btnQuitarFoto").addEventListener("click", () => Formularios.setFoto(null));
+  document.getElementById("inputTomarFoto").addEventListener("change", (e) => {
+    const archivo = e.target.files[0];
+    if (archivo) Formularios.procesarFotoManual(archivo);
+    e.target.value = ""; // permite elegir la misma foto de nuevo si hace falta
+  });
 
   // --- Modal producto: cerrar ---
   document.getElementById("modalClose").addEventListener("click", () => Formularios.ocultarModal());
