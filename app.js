@@ -14,61 +14,33 @@
      11. Inicialización
    ========================================================================== */
 
+
 /* ============================================================
    1. CONFIGURACIÓN: categorías e imágenes predeterminadas
    ============================================================ */
 
 const CATEGORIAS = {
-  lacteos: { label: "Lácteos", emoji: "🥛" },
-  granos: { label: "Granos y pastas", emoji: "🍚" },
-  bebidas: { label: "Bebidas", emoji: "🧃" },
-  limpieza: { label: "Limpieza", emoji: "🧴" },
-  higiene: { label: "Higiene", emoji: "🧻" },
-  otros: { label: "Otros", emoji: "📦" },
+  lacteos:   { label: "Lácteos",   emoji: "🥛" },
+  granos:    { label: "Granos y pastas", emoji: "🍚" },
+  bebidas:   { label: "Bebidas",   emoji: "🧃" },
+  limpieza:  { label: "Limpieza",  emoji: "🧴" },
+  higiene:   { label: "Higiene",   emoji: "🧻" },
+  otros:     { label: "Otros",     emoji: "📦" },
 };
 
 // Imágenes seleccionables al crear/editar un producto, agrupadas por categoría.
 const IMAGENES_POR_CATEGORIA = {
-  lacteos: [
-    { emoji: "🥛", nombre: "Leche" },
-    { emoji: "🧀", nombre: "Queso" },
-    { emoji: "🍦", nombre: "Yogur" },
-    { emoji: "🧈", nombre: "Manteca" },
-  ],
-  granos: [
-    { emoji: "🍚", nombre: "Arroz" },
-    { emoji: "🍝", nombre: "Fideos" },
-    { emoji: "🌾", nombre: "Harina" },
-    { emoji: "🥫", nombre: "Legumbres" },
-  ],
-  bebidas: [
-    { emoji: "🧃", nombre: "Jugo" },
-    { emoji: "☕", nombre: "Café" },
-    { emoji: "🍷", nombre: "Vino" },
-    { emoji: "💧", nombre: "Agua" },
-  ],
-  limpieza: [
-    { emoji: "🧴", nombre: "Detergente" },
-    { emoji: "🧼", nombre: "Jabón" },
-    { emoji: "🧽", nombre: "Esponja" },
-    { emoji: "🪣", nombre: "Balde" },
-  ],
-  higiene: [
-    { emoji: "🧻", nombre: "Papel" },
-    { emoji: "🪥", nombre: "Cepillo" },
-    { emoji: "🧷", nombre: "Varios" },
-    { emoji: "🚿", nombre: "Shampoo" },
-  ],
-  otros: [
-    { emoji: "📦", nombre: "Genérico" },
-    { emoji: "🥫", nombre: "Conserva" },
-    { emoji: "🍎", nombre: "Fruta" },
-    { emoji: "🍞", nombre: "Pan" },
-  ],
+  lacteos:  [{ emoji: "🥛", nombre: "Leche" }, { emoji: "🧀", nombre: "Queso" }, { emoji: "🍦", nombre: "Yogur" }, { emoji: "🧈", nombre: "Manteca" }],
+  granos:   [{ emoji: "🍚", nombre: "Arroz" }, { emoji: "🍝", nombre: "Fideos" }, { emoji: "🌾", nombre: "Harina" }, { emoji: "🥫", nombre: "Legumbres" }],
+  bebidas:  [{ emoji: "🧃", nombre: "Jugo" }, { emoji: "☕", nombre: "Café" }, { emoji: "🍷", nombre: "Vino" }, { emoji: "💧", nombre: "Agua" }],
+  limpieza: [{ emoji: "🧴", nombre: "Detergente" }, { emoji: "🧼", nombre: "Jabón" }, { emoji: "🧽", nombre: "Esponja" }, { emoji: "🪣", nombre: "Balde" }],
+  higiene:  [{ emoji: "🧻", nombre: "Papel" }, { emoji: "🪥", nombre: "Cepillo" }, { emoji: "🧷", nombre: "Varios" }, { emoji: "🚿", nombre: "Shampoo" }],
+  otros:    [{ emoji: "📦", nombre: "Genérico" }, { emoji: "🥫", nombre: "Conserva" }, { emoji: "🍎", nombre: "Fruta" }, { emoji: "🍞", nombre: "Pan" }],
 };
 
 const CLAVE_PRODUCTOS = "almacen_productos";
-const CLAVE_COMPRAS = "almacen_compras";
+const CLAVE_COMPRAS   = "almacen_compras";
+
 
 /* ============================================================
    2. STORAGE — única capa que toca localStorage directamente.
@@ -92,7 +64,8 @@ const Storage = {
 };
 
 let productos = Storage.cargarProductos();
-let compras = Storage.cargarCompras();
+let compras   = Storage.cargarCompras();
+
 
 /* ============================================================
    3. PRODUCTOS
@@ -157,6 +130,7 @@ const Productos = {
   },
 };
 
+
 /* ============================================================
    4. VENCIMIENTOS — el estado nunca se guarda: se calcula acá
       cada vez, a partir de la fecha del navegador.
@@ -181,34 +155,28 @@ const Vencimientos = {
     }
     const dias = this.diasRestantes(producto.vencimiento);
     if (dias < 0) return { clave: "vencido", label: "Vencido", tono: "danger" };
-    if (dias <= 2)
-      return { clave: "vence-pronto", label: "Vence pronto", tono: "soon" };
-    if (dias <= 7)
-      return { clave: "proximo", label: "Próximo a vencer", tono: "warn" };
+    if (dias <= 2) return { clave: "vence-pronto", label: "Vence pronto", tono: "soon" };
+    if (dias <= 7) return { clave: "proximo", label: "Próximo a vencer", tono: "warn" };
     return { clave: "normal", label: "Disponible", tono: "ok" };
   },
 
   textoDias(fechaISO) {
     const dias = this.diasRestantes(fechaISO);
     if (dias === null) return "Sin fecha";
-    if (dias < 0)
-      return `Venció hace ${Math.abs(dias)} día${Math.abs(dias) === 1 ? "" : "s"}`;
+    if (dias < 0) return `Venció hace ${Math.abs(dias)} día${Math.abs(dias) === 1 ? "" : "s"}`;
     if (dias === 0) return "Vence hoy";
     if (dias === 1) return "Vence mañana";
     return `Vence en ${dias} días`;
   },
 };
 
+
 /* ============================================================
    5-B. TOAST — feedback visual breve para confirmar acciones.
    ============================================================ */
 
 const Toast = {
-  iconos: {
-    ok: "bi-check2-circle",
-    info: "bi-info-circle",
-    danger: "bi-exclamation-circle",
-  },
+  iconos: { ok: "bi-check2-circle", info: "bi-info-circle", danger: "bi-exclamation-circle" },
 
   mostrar(mensaje, tipo = "ok") {
     const cont = document.getElementById("toastContainer");
@@ -225,6 +193,7 @@ const Toast = {
     }, 2400);
   },
 };
+
 
 /* ============================================================
    5. COMPRAS — lista de compras, independiente del inventario.
@@ -276,11 +245,13 @@ const Compras = {
   },
 };
 
+
 /* ============================================================
    6. RENDER
    ============================================================ */
 
 const Render = {
+
   renderTodo() {
     this.renderDashboard();
     this.renderInventario();
@@ -301,47 +272,18 @@ const Render = {
       const e = Vencimientos.calcularEstado(p);
       return e.clave === "proximo" || e.clave === "vence-pronto";
     }).length;
-    const vencidos = productos.filter(
-      (p) => Vencimientos.calcularEstado(p).clave === "vencido",
-    ).length;
+    const vencidos = productos.filter((p) => Vencimientos.calcularEstado(p).clave === "vencido").length;
     const paraComprar = productos.filter((p) => p.cantidad === 0).length;
 
     const stats = [
-      {
-        valor: total,
-        label: "Productos registrados",
-        tono: "neutral",
-        icon: "bi-house-door",
-      },
-      {
-        valor: disponibles,
-        label: "Con stock disponible",
-        tono: "ok",
-        icon: "bi-check2",
-      },
-      {
-        valor: porVencer,
-        label: "Por vencer",
-        tono: "warn",
-        icon: "bi-clock-history",
-      },
-      {
-        valor: vencidos,
-        label: "Vencidos",
-        tono: "danger",
-        icon: "bi-exclamation-triangle-fill",
-      },
-      {
-        valor: paraComprar,
-        label: "Para comprar",
-        tono: "pink",
-        icon: "bi-cart3",
-      },
+      { valor: total, label: "Productos registrados", tono: "neutral", icon: "bi-house-door" },
+      { valor: disponibles, label: "Con stock disponible", tono: "ok", icon: "bi-check2" },
+      { valor: porVencer, label: "Por vencer", tono: "warn", icon: "bi-clock-history" },
+      { valor: vencidos, label: "Vencidos", tono: "danger", icon: "bi-exclamation-triangle-fill" },
+      { valor: paraComprar, label: "Para comprar", tono: "pink", icon: "bi-cart3" },
     ];
 
-    document.getElementById("statsGrid").innerHTML = stats
-      .map(
-        (s) => `
+    document.getElementById("statsGrid").innerHTML = stats.map((s) => `
       <div class="stat-card tone-${s.tono}">
         <div class="stat-icon"><i class="bi ${s.icon}"></i></div>
         <div>
@@ -349,9 +291,7 @@ const Render = {
           <div class="stat-label">${s.label}</div>
         </div>
       </div>
-    `,
-      )
-      .join("");
+    `).join("");
 
     const proximos = productos
       .filter((p) => p.cantidad > 0 && p.vencimiento)
@@ -361,9 +301,7 @@ const Render = {
 
     const contProx = document.getElementById("listaVencimientosProximos");
     contProx.innerHTML = proximos.length
-      ? proximos
-          .map(
-            ({ p }) => `
+      ? proximos.map(({ p }) => `
         <div class="mini-row">
           <div class="mini-left">
             <span class="mini-emoji">${p.imagen}</span>
@@ -374,18 +312,15 @@ const Render = {
           </div>
           ${this.pill(Vencimientos.calcularEstado(p))}
         </div>
-      `,
-          )
-          .join("")
+      `).join("")
       : `<p class="empty-state">No hay productos por vencer en los próximos 7 días.</p>`;
 
     const sinStock = productos.filter((p) => p.cantidad === 0);
     const contComprar = document.getElementById("listaNecesitoComprar");
     contComprar.innerHTML = sinStock.length
-      ? sinStock
-          .map((p) => {
-            const yaEnLista = compras.some((c) => c.productoId === p.id);
-            return `
+      ? sinStock.map((p) => {
+          const yaEnLista = compras.some((c) => c.productoId === p.id);
+          return `
           <div class="mini-row">
             <div class="mini-left">
               <span class="mini-emoji">${p.imagen}</span>
@@ -394,15 +329,12 @@ const Render = {
                 <div class="mini-sub">Stock: 0</div>
               </div>
             </div>
-            ${
-              yaEnLista
-                ? `<span class="pill-estado pill-neutral">En la lista</span>`
-                : `<button class="btn-mini" data-add-compra="${p.id}">Agregar a compras</button>`
-            }
+            ${yaEnLista
+              ? `<span class="pill-estado pill-neutral">En la lista</span>`
+              : `<button class="btn-mini" data-add-compra="${p.id}">Agregar a compras</button>`}
           </div>
         `;
-          })
-          .join("")
+        }).join("")
       : `<p class="empty-state">No falta reponer nada por ahora.</p>`;
 
     // Banner "todo en orden" / alerta, con la mascota.
@@ -415,14 +347,7 @@ const Render = {
   // Orden de urgencia para el inventario: lo que necesita atención
   // primero (vencido, por vencer) y lo que está sin fecha al final.
   ordenPorUrgencia(lista) {
-    const prioridad = {
-      vencido: 0,
-      "vence-pronto": 1,
-      proximo: 2,
-      "sin-stock": 3,
-      normal: 4,
-      "sin-fecha": 5,
-    };
+    const prioridad = { "vencido": 0, "vence-pronto": 1, "proximo": 2, "sin-stock": 3, "normal": 4, "sin-fecha": 5 };
     return lista.slice().sort((a, b) => {
       const pa = prioridad[Vencimientos.calcularEstado(a).clave] ?? 99;
       const pb = prioridad[Vencimientos.calcularEstado(b).clave] ?? 99;
@@ -453,11 +378,10 @@ const Render = {
       return;
     }
 
-    grid.innerHTML = filtrados
-      .map((p) => {
-        const estado = Vencimientos.calcularEstado(p);
-        const cat = CATEGORIAS[p.categoria] || CATEGORIAS.otros;
-        return `
+    grid.innerHTML = filtrados.map((p) => {
+      const estado = Vencimientos.calcularEstado(p);
+      const cat = CATEGORIAS[p.categoria] || CATEGORIAS.otros;
+      return `
         <div class="product-card">
           <span class="card-emoji">${p.imagen}</span>
           <div class="card-nombre">${p.nombre}</div>
@@ -466,18 +390,15 @@ const Render = {
           <div class="card-venc">${p.vencimiento ? "Vence: " + this.formatearFecha(p.vencimiento) : "Sin vencimiento"}</div>
           ${this.pill(estado)}
           <div class="card-actions">
-            ${
-              p.cantidad > 0
-                ? `<button class="btn-consumir" data-consumir="${p.id}"><i class="bi bi-dash-lg"></i> Consumir</button>`
-                : `<button class="btn-agregarstock" data-consumir="${p.id}"><i class="bi bi-plus-lg"></i> Agregar</button>`
-            }
+            ${p.cantidad > 0
+              ? `<button class="btn-consumir" data-consumir="${p.id}"><i class="bi bi-dash-lg"></i> Consumir</button>`
+              : `<button class="btn-agregarstock" data-consumir="${p.id}"><i class="bi bi-plus-lg"></i> Agregar</button>`}
             <button class="btn-editar" data-editar="${p.id}">Editar</button>
             <button class="btn-eliminar" data-eliminar="${p.id}"><i class="bi bi-trash3"></i></button>
           </div>
         </div>
       `;
-      })
-      .join("");
+    }).join("");
   },
 
   formatearFecha(iso) {
@@ -496,9 +417,7 @@ const Render = {
         return e.clave === "proximo" || e.clave === "vence-pronto";
       });
     } else if (tab === "vencidos") {
-      lista = lista.filter(
-        (p) => Vencimientos.calcularEstado(p).clave === "vencido",
-      );
+      lista = lista.filter((p) => Vencimientos.calcularEstado(p).clave === "vencido");
     } else if (tab === "sin-fecha") {
       lista = lista.filter((p) => !p.vencimiento && p.cantidad > 0);
     }
@@ -515,22 +434,10 @@ const Render = {
 
     if (lista.length === 0) {
       const mensajes = {
-        todos: [
-          "Todavía no tenés productos cargados",
-          "Agregá el primero con el botón de arriba.",
-        ],
-        proximos: [
-          "Nada por vencer pronto",
-          "Por ahora no hay productos en esta categoría.",
-        ],
-        vencidos: [
-          "Ningún producto vencido",
-          "¡Buen trabajo manteniendo todo al día!",
-        ],
-        "sin-fecha": [
-          "Todo tiene fecha cargada",
-          "No hay productos sin vencimiento registrado.",
-        ],
+        "todos": ["Todavía no tenés productos cargados", "Agregá el primero con el botón de arriba."],
+        "proximos": ["Nada por vencer pronto", "Por ahora no hay productos en esta categoría."],
+        "vencidos": ["Ningún producto vencido", "¡Buen trabajo manteniendo todo al día!"],
+        "sin-fecha": ["Todo tiene fecha cargada", "No hay productos sin vencimiento registrado."],
       };
       const [titulo, sub] = mensajes[tab] || mensajes["todos"];
       body.innerHTML = `
@@ -545,10 +452,9 @@ const Render = {
       return;
     }
 
-    body.innerHTML = lista
-      .map((p) => {
-        const estado = Vencimientos.calcularEstado(p);
-        return `
+    body.innerHTML = lista.map((p) => {
+      const estado = Vencimientos.calcularEstado(p);
+      return `
         <tr>
           <td>
             <div class="prod-cell">
@@ -560,8 +466,7 @@ const Render = {
           <td>${this.pill(estado)}</td>
         </tr>
       `;
-      })
-      .join("");
+    }).join("");
   },
 
   // ---------- Compras ----------
@@ -579,42 +484,35 @@ const Render = {
     empty.classList.add("d-none");
     btnTodos.classList.remove("d-none");
 
-    lista.innerHTML = compras
-      .map(
-        (c) => `
+    lista.innerHTML = compras.map((c) => `
       <li>
         <input type="checkbox" data-comprado="${c.id}">
         <span class="mini-emoji">${c.emoji}</span>
         <span class="item-nombre">${c.nombre}</span>
         ${c.productoId ? `<span class="item-sub">Repone stock</span>` : ""}
       </li>
-    `,
-      )
-      .join("");
+    `).join("");
   },
 
   renderBadgeCompras() {
     const n = compras.length;
-    document
-      .querySelectorAll("#badgeCompras, #badgeComprasMobile")
-      .forEach((el) => {
-        el.textContent = n;
-        el.classList.toggle("show", n > 0);
-      });
+    document.querySelectorAll("#badgeCompras, #badgeComprasMobile").forEach((el) => {
+      el.textContent = n;
+      el.classList.toggle("show", n > 0);
+    });
   },
 
   poblarSelectCategorias() {
     const selectFiltro = document.getElementById("filtroCategoria");
     const selectForm = document.getElementById("inputCategoria");
     const opciones = Object.entries(CATEGORIAS)
-      .map(([clave, c]) => `<option value="${clave}">${c.label}</option>`)
-      .join("");
+      .map(([clave, c]) => `<option value="${clave}">${c.label}</option>`).join("");
 
     selectForm.innerHTML = opciones;
-    selectFiltro.innerHTML =
-      `<option value="todas">Todas las categorías</option>` + opciones;
+    selectFiltro.innerHTML = `<option value="todas">Todas las categorías</option>` + opciones;
   },
 };
+
 
 /* ============================================================
    7. BÚSQUEDA / FILTROS
@@ -628,27 +526,22 @@ const Filtros = {
 
   aplicar(lista) {
     return lista.filter((p) => {
-      const coincideTexto = p.nombre
-        .toLowerCase()
-        .includes(this.texto.toLowerCase());
-      const coincideCategoria =
-        this.categoria === "todas" || p.categoria === this.categoria;
+      const coincideTexto = p.nombre.toLowerCase().includes(this.texto.toLowerCase());
+      const coincideCategoria = this.categoria === "todas" || p.categoria === this.categoria;
 
       let coincideEstado = true;
       if (this.estado !== "todos") {
         const estado = Vencimientos.calcularEstado(p);
         if (this.estado === "disponible") coincideEstado = p.cantidad > 0;
         if (this.estado === "sin-stock") coincideEstado = p.cantidad === 0;
-        if (this.estado === "por-vencer")
-          coincideEstado =
-            estado.clave === "proximo" || estado.clave === "vence-pronto";
-        if (this.estado === "vencido")
-          coincideEstado = estado.clave === "vencido";
+        if (this.estado === "por-vencer") coincideEstado = estado.clave === "proximo" || estado.clave === "vence-pronto";
+        if (this.estado === "vencido") coincideEstado = estado.clave === "vencido";
       }
       return coincideTexto && coincideCategoria && coincideEstado;
     });
   },
 };
+
 
 /* ============================================================
    8. FORMULARIOS — modal de agregar/editar producto,
@@ -689,30 +582,21 @@ const Formularios = {
   },
 
   renderImagePicker(categoria, seleccionada) {
-    const opciones =
-      IMAGENES_POR_CATEGORIA[categoria] || IMAGENES_POR_CATEGORIA.otros;
+    const opciones = IMAGENES_POR_CATEGORIA[categoria] || IMAGENES_POR_CATEGORIA.otros;
     if (!seleccionada) seleccionada = opciones[0].emoji;
     this.imagenSeleccionada = seleccionada;
 
     const cont = document.getElementById("imagePicker");
-    cont.innerHTML = opciones
-      .map(
-        (op) => `
+    cont.innerHTML = opciones.map((op) => `
       <button type="button" class="img-opt ${op.emoji === seleccionada ? "selected" : ""}" data-imagen="${op.emoji}">
         <span class="img-emoji">${op.emoji}</span>
         <span class="img-nombre">${op.nombre}</span>
       </button>
-    `,
-      )
-      .join("");
+    `).join("");
   },
 
-  mostrarModal() {
-    document.getElementById("modalOverlay").classList.remove("d-none");
-  },
-  ocultarModal() {
-    document.getElementById("modalOverlay").classList.add("d-none");
-  },
+  mostrarModal() { document.getElementById("modalOverlay").classList.remove("d-none"); },
+  ocultarModal() { document.getElementById("modalOverlay").classList.add("d-none"); },
 
   guardar(e) {
     e.preventDefault();
@@ -756,6 +640,7 @@ const Formularios = {
   },
 };
 
+
 /* ============================================================
    9. CONSUMO MODAL — consumir o agregar stock con stepper.
       La cantidad del stepper es "cuánto mover", no el stock total.
@@ -773,11 +658,8 @@ const ConsumoModal = {
 
     document.getElementById("consumoIcon").textContent = p.imagen;
     document.getElementById("consumoNombre").textContent = p.nombre;
-    document.getElementById("consumoCategoria").textContent = (
-      CATEGORIAS[p.categoria] || CATEGORIAS.otros
-    ).label;
-    document.getElementById("consumoStockActual").textContent =
-      `${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}`;
+    document.getElementById("consumoCategoria").textContent = (CATEGORIAS[p.categoria] || CATEGORIAS.otros).label;
+    document.getElementById("consumoStockActual").textContent = `${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}`;
     document.getElementById("consumoCantidad").textContent = this.cantidadMover;
 
     const btnConsumir = document.getElementById("consumoConfirmar");
@@ -787,9 +669,7 @@ const ConsumoModal = {
     document.getElementById("consumoOverlay").classList.remove("d-none");
   },
 
-  cerrar() {
-    document.getElementById("consumoOverlay").classList.add("d-none");
-  },
+  cerrar() { document.getElementById("consumoOverlay").classList.add("d-none"); },
 
   ajustar(delta) {
     const p = Productos.obtener(this.productoId);
@@ -818,6 +698,7 @@ const ConsumoModal = {
   },
 };
 
+
 /* ============================================================
    10. SCANNER — lee códigos de barras con la cámara (vía
        html5-qrcode) y busca el producto en Open Food Facts,
@@ -836,9 +717,7 @@ const Scanner = {
     this.procesando = false;
 
     if (typeof Html5Qrcode === "undefined") {
-      this.mostrarError(
-        "No se pudo cargar el lector de cámara. Revisá tu conexión a internet.",
-      );
+      this.mostrarError("No se pudo cargar el lector de cámara. Revisá tu conexión a internet.");
       return;
     }
 
@@ -848,24 +727,31 @@ const Scanner = {
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 240, height: 140 } },
         (codigoDetectado) => this.onDetectado(codigoDetectado),
-        () => {}, // se llama en cada frame sin detección; lo ignoramos
+        () => {} // se llama en cada frame sin detección; lo ignoramos
       )
       .catch(() => {
-        this.mostrarError(
-          "No se pudo acceder a la cámara. Revisá los permisos del navegador.",
-        );
+        this.mostrarError("No se pudo acceder a la cámara. Revisá los permisos del navegador.");
       });
   },
 
   cerrar() {
-    if (this.instancia) {
-      this.instancia
-        .stop()
-        .then(() => this.instancia.clear())
-        .catch(() => {});
-      this.instancia = null;
-    }
+    // Ocultamos el modal siempre primero: si la cámara todavía no
+    // terminó de iniciar, detenerla puede fallar, y no queremos que
+    // ese error deje la ventana trabada en pantalla.
     document.getElementById("scannerOverlay").classList.add("d-none");
+
+    const instanciaActual = this.instancia;
+    this.instancia = null;
+    if (!instanciaActual) return;
+
+    try {
+      instanciaActual
+        .stop()
+        .then(() => instanciaActual.clear())
+        .catch(() => {});
+    } catch (err) {
+      // La cámara puede no haber llegado a iniciar; no hay nada que limpiar.
+    }
   },
 
   mostrarError(msg) {
@@ -886,18 +772,10 @@ const Scanner = {
   inferirCategoria(texto) {
     const s = (texto || "").toLowerCase();
     if (/(lact|leche|yogur|queso|dairy|milk)/.test(s)) return "lacteos";
-    if (/(arroz|pasta|fideo|harina|cereal|legumbre|rice|noodle|grain)/.test(s))
-      return "granos";
-    if (
-      /(bebida|jugo|agua|gaseosa|beverage|drink|water|soda|wine|vino|cerveza|beer)/.test(
-        s,
-      )
-    )
-      return "bebidas";
-    if (/(limpieza|detergente|lavandina|cleaning|clean)/.test(s))
-      return "limpieza";
-    if (/(higiene|shampoo|jabón|jabon|papel|hygiene|deo)/.test(s))
-      return "higiene";
+    if (/(arroz|pasta|fideo|harina|cereal|legumbre|rice|noodle|grain)/.test(s)) return "granos";
+    if (/(bebida|jugo|agua|gaseosa|beverage|drink|water|soda|wine|vino|cerveza|beer)/.test(s)) return "bebidas";
+    if (/(limpieza|detergente|lavandina|cleaning|clean)/.test(s)) return "limpieza";
+    if (/(higiene|shampoo|jabón|jabon|papel|hygiene|deo)/.test(s)) return "higiene";
     return "otros";
   },
 
@@ -914,18 +792,14 @@ const Scanner = {
     //    precompletar el formulario de alta.
     Toast.mostrar("Buscando producto...", "info");
 
-    fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(codigo)}.json`,
-    )
+    fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(codigo)}.json`)
       .then((r) => r.json())
       .then((data) => {
         let nombre = "";
         let categoriaSugerida = "otros";
         if (data && data.status === 1 && data.product) {
           nombre = data.product.product_name || data.product.generic_name || "";
-          categoriaSugerida = this.inferirCategoria(
-            (data.product.categories || "") + " " + nombre,
-          );
+          categoriaSugerida = this.inferirCategoria((data.product.categories || "") + " " + nombre);
         }
 
         Formularios.abrirParaAgregar(codigo);
@@ -934,21 +808,17 @@ const Scanner = {
         Formularios.renderImagePicker(categoriaSugerida);
 
         Toast.mostrar(
-          nombre
-            ? `Producto encontrado: "${nombre}"`
-            : "No encontramos el producto, completá los datos",
-          nombre ? "ok" : "info",
+          nombre ? `Producto encontrado: "${nombre}"` : "No encontramos el producto, completá los datos",
+          nombre ? "ok" : "info"
         );
       })
       .catch(() => {
         Formularios.abrirParaAgregar(codigo);
-        Toast.mostrar(
-          "Sin conexión para buscar el producto, completá los datos a mano",
-          "info",
-        );
+        Toast.mostrar("Sin conexión para buscar el producto, completá los datos a mano", "info");
       });
   },
 };
+
 
 /* ============================================================
    11. NAVEGACIÓN entre vistas
@@ -956,9 +826,7 @@ const Scanner = {
 
 const Navegacion = {
   irA(vista) {
-    document
-      .querySelectorAll(".view")
-      .forEach((v) => v.classList.add("d-none"));
+    document.querySelectorAll(".view").forEach((v) => v.classList.add("d-none"));
     document.getElementById("view-" + vista).classList.remove("d-none");
 
     document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
@@ -966,6 +834,7 @@ const Navegacion = {
     });
   },
 };
+
 
 /* ============================================================
    12. DATOS INICIALES (solo si localStorage está vacío)
@@ -982,111 +851,47 @@ function cargarDatosIniciales() {
   };
 
   productos = [
-    {
-      id: Productos.generarId(),
-      nombre: "Leche",
-      categoria: "lacteos",
-      cantidad: 3,
-      vencimiento: enDias(1),
-      imagen: "🥛",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Arroz",
-      categoria: "granos",
-      cantidad: 2,
-      vencimiento: enDias(120),
-      imagen: "🍚",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Fideos",
-      categoria: "granos",
-      cantidad: 5,
-      vencimiento: enDias(200),
-      imagen: "🍝",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Yogur",
-      categoria: "lacteos",
-      cantidad: 2,
-      vencimiento: enDias(3),
-      imagen: "🍦",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Atún",
-      categoria: "otros",
-      cantidad: 0,
-      vencimiento: enDias(300),
-      imagen: "🥫",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Detergente",
-      categoria: "limpieza",
-      cantidad: 1,
-      vencimiento: null,
-      imagen: "🧴",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Papel higiénico",
-      categoria: "higiene",
-      cantidad: 0,
-      vencimiento: null,
-      imagen: "🧻",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Queso",
-      categoria: "lacteos",
-      cantidad: 1,
-      vencimiento: enDias(-1),
-      imagen: "🧀",
-    },
+    { id: Productos.generarId(), nombre: "Leche", categoria: "lacteos", cantidad: 3, vencimiento: enDias(1), imagen: "🥛" },
+    { id: Productos.generarId(), nombre: "Arroz", categoria: "granos", cantidad: 2, vencimiento: enDias(120), imagen: "🍚" },
+    { id: Productos.generarId(), nombre: "Fideos", categoria: "granos", cantidad: 5, vencimiento: enDias(200), imagen: "🍝" },
+    { id: Productos.generarId(), nombre: "Yogur", categoria: "lacteos", cantidad: 2, vencimiento: enDias(3), imagen: "🍦" },
+    { id: Productos.generarId(), nombre: "Atún", categoria: "otros", cantidad: 0, vencimiento: enDias(300), imagen: "🥫" },
+    { id: Productos.generarId(), nombre: "Detergente", categoria: "limpieza", cantidad: 1, vencimiento: null, imagen: "🧴" },
+    { id: Productos.generarId(), nombre: "Papel higiénico", categoria: "higiene", cantidad: 0, vencimiento: null, imagen: "🧻" },
+    { id: Productos.generarId(), nombre: "Queso", categoria: "lacteos", cantidad: 1, vencimiento: enDias(-1), imagen: "🧀" },
   ];
   Storage.guardarProductos(productos);
 }
+
 
 /* ============================================================
    13. EVENTOS
    ============================================================ */
 
 function inicializarEventos() {
+
   // --- Navegación (sidebar + bottom nav) ---
   document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
     btn.addEventListener("click", () => Navegacion.irA(btn.dataset.view));
   });
 
   // --- Abrir modal de agregar ---
-  document
-    .getElementById("btnAddSidebar")
-    .addEventListener("click", () => Formularios.abrirParaAgregar());
-  document
-    .getElementById("btnAddFab")
-    .addEventListener("click", () => Formularios.abrirParaAgregar());
+  document.getElementById("btnAddSidebar").addEventListener("click", () => Formularios.abrirParaAgregar());
+  document.getElementById("btnAddFab").addEventListener("click", () => Formularios.abrirParaAgregar());
 
   // --- Escáner de código de barras ---
   document.getElementById("btnEscanear").addEventListener("click", () => {
     Formularios.ocultarModal();
     Scanner.abrir();
   });
-  document
-    .getElementById("scannerClose")
-    .addEventListener("click", () => Scanner.cerrar());
+  document.getElementById("scannerClose").addEventListener("click", () => Scanner.cerrar());
   document.getElementById("scannerOverlay").addEventListener("click", (e) => {
     if (e.target.id === "scannerOverlay") Scanner.cerrar();
   });
 
   // --- Modal producto: cerrar ---
-  document
-    .getElementById("modalClose")
-    .addEventListener("click", () => Formularios.ocultarModal());
-  document
-    .getElementById("btnCancelarForm")
-    .addEventListener("click", () => Formularios.ocultarModal());
+  document.getElementById("modalClose").addEventListener("click", () => Formularios.ocultarModal());
+  document.getElementById("btnCancelarForm").addEventListener("click", () => Formularios.ocultarModal());
   document.getElementById("modalOverlay").addEventListener("click", (e) => {
     if (e.target.id === "modalOverlay") Formularios.ocultarModal();
   });
@@ -1099,46 +904,28 @@ function inicializarEventos() {
     const btn = e.target.closest(".img-opt");
     if (!btn) return;
     Formularios.imagenSeleccionada = btn.dataset.imagen;
-    document
-      .querySelectorAll(".img-opt")
-      .forEach((b) => b.classList.remove("selected"));
+    document.querySelectorAll(".img-opt").forEach((b) => b.classList.remove("selected"));
     btn.classList.add("selected");
   });
 
-  document
-    .getElementById("formProducto")
-    .addEventListener("submit", (e) => Formularios.guardar(e));
+  document.getElementById("formProducto").addEventListener("submit", (e) => Formularios.guardar(e));
 
   // --- Confirmación de eliminación ---
-  document
-    .getElementById("btnCancelarEliminar")
-    .addEventListener("click", () => Formularios.cerrarConfirmacion());
-  document
-    .getElementById("btnConfirmarEliminar")
-    .addEventListener("click", () => Formularios.confirmarEliminar());
+  document.getElementById("btnCancelarEliminar").addEventListener("click", () => Formularios.cerrarConfirmacion());
+  document.getElementById("btnConfirmarEliminar").addEventListener("click", () => Formularios.confirmarEliminar());
   document.getElementById("confirmOverlay").addEventListener("click", (e) => {
     if (e.target.id === "confirmOverlay") Formularios.cerrarConfirmacion();
   });
 
   // --- Modal de consumo ---
-  document
-    .getElementById("consumoClose")
-    .addEventListener("click", () => ConsumoModal.cerrar());
+  document.getElementById("consumoClose").addEventListener("click", () => ConsumoModal.cerrar());
   document.getElementById("consumoOverlay").addEventListener("click", (e) => {
     if (e.target.id === "consumoOverlay") ConsumoModal.cerrar();
   });
-  document
-    .getElementById("consumoMenos")
-    .addEventListener("click", () => ConsumoModal.ajustar(-1));
-  document
-    .getElementById("consumoMas")
-    .addEventListener("click", () => ConsumoModal.ajustar(1));
-  document
-    .getElementById("consumoConfirmar")
-    .addEventListener("click", () => ConsumoModal.confirmarConsumir());
-  document
-    .getElementById("consumoAgregarStock")
-    .addEventListener("click", () => ConsumoModal.confirmarAgregar());
+  document.getElementById("consumoMenos").addEventListener("click", () => ConsumoModal.ajustar(-1));
+  document.getElementById("consumoMas").addEventListener("click", () => ConsumoModal.ajustar(1));
+  document.getElementById("consumoConfirmar").addEventListener("click", () => ConsumoModal.confirmarConsumir());
+  document.getElementById("consumoAgregarStock").addEventListener("click", () => ConsumoModal.confirmarAgregar());
 
   // --- Búsqueda ---
   document.getElementById("inputBuscar").addEventListener("input", (e) => {
@@ -1150,9 +937,7 @@ function inicializarEventos() {
   document.getElementById("filtrosEstado").addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
-    document
-      .querySelectorAll("#filtrosEstado .chip")
-      .forEach((c) => c.classList.remove("active"));
+    document.querySelectorAll("#filtrosEstado .chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     Filtros.estado = chip.dataset.filter;
     Render.renderInventario();
@@ -1168,9 +953,7 @@ function inicializarEventos() {
   document.getElementById("tabsVencimientos").addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
-    document
-      .querySelectorAll("#tabsVencimientos .chip")
-      .forEach((c) => c.classList.remove("active"));
+    document.querySelectorAll("#tabsVencimientos .chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     Filtros.tabVencimientos = chip.dataset.tabVenc;
     Render.renderVencimientos();
@@ -1184,23 +967,20 @@ function inicializarEventos() {
 
     if (consumir) ConsumoModal.abrir(consumir.dataset.consumir);
     if (editar) Formularios.abrirParaEditar(editar.dataset.editar);
-    if (eliminar)
-      Formularios.pedirConfirmacionEliminar(eliminar.dataset.eliminar);
+    if (eliminar) Formularios.pedirConfirmacionEliminar(eliminar.dataset.eliminar);
   });
 
   // --- "Agregar a compras" desde el dashboard ---
-  document
-    .getElementById("listaNecesitoComprar")
-    .addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-add-compra]");
-      if (!btn) return;
-      const p = Productos.obtener(btn.dataset.addCompra);
-      if (p) {
-        Compras.agregarDesdeProducto(p);
-        Toast.mostrar(`"${p.nombre}" agregado a la lista de compras`, "info");
-        Render.renderTodo();
-      }
-    });
+  document.getElementById("listaNecesitoComprar").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add-compra]");
+    if (!btn) return;
+    const p = Productos.obtener(btn.dataset.addCompra);
+    if (p) {
+      Compras.agregarDesdeProducto(p);
+      Toast.mostrar(`"${p.nombre}" agregado a la lista de compras`, "info");
+      Render.renderTodo();
+    }
+  });
 
   // --- Lista de compras: marcar como comprado ---
   document.getElementById("shoppingList").addEventListener("change", (e) => {
@@ -1212,35 +992,26 @@ function inicializarEventos() {
   });
 
   // --- Marcar todos como comprados ---
-  document
-    .getElementById("btnMarcarTodosComprados")
-    .addEventListener("click", () => {
-      Compras.marcarTodosComprados();
-      Toast.mostrar("Lista de compras vaciada");
-      Render.renderTodo();
-    });
+  document.getElementById("btnMarcarTodosComprados").addEventListener("click", () => {
+    Compras.marcarTodosComprados();
+    Toast.mostrar("Lista de compras vaciada");
+    Render.renderTodo();
+  });
 
   // --- Modal: agregar item manual a la lista de compras ---
-  document
-    .getElementById("btnAbrirAgregarCompra")
-    .addEventListener("click", () => {
-      document.getElementById("formCompraItem").reset();
-      document.getElementById("compraItemOverlay").classList.remove("d-none");
-    });
+  document.getElementById("btnAbrirAgregarCompra").addEventListener("click", () => {
+    document.getElementById("formCompraItem").reset();
+    document.getElementById("compraItemOverlay").classList.remove("d-none");
+  });
   document.getElementById("compraItemClose").addEventListener("click", () => {
     document.getElementById("compraItemOverlay").classList.add("d-none");
   });
-  document
-    .getElementById("btnCancelarCompraItem")
-    .addEventListener("click", () => {
-      document.getElementById("compraItemOverlay").classList.add("d-none");
-    });
-  document
-    .getElementById("compraItemOverlay")
-    .addEventListener("click", (e) => {
-      if (e.target.id === "compraItemOverlay")
-        document.getElementById("compraItemOverlay").classList.add("d-none");
-    });
+  document.getElementById("btnCancelarCompraItem").addEventListener("click", () => {
+    document.getElementById("compraItemOverlay").classList.add("d-none");
+  });
+  document.getElementById("compraItemOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "compraItemOverlay") document.getElementById("compraItemOverlay").classList.add("d-none");
+  });
   document.getElementById("formCompraItem").addEventListener("submit", (e) => {
     e.preventDefault();
     const nombre = document.getElementById("inputCompraNombre").value.trim();
@@ -1251,6 +1022,7 @@ function inicializarEventos() {
     Render.renderTodo();
   });
 }
+
 
 /* ============================================================
    14. INICIALIZACIÓN
