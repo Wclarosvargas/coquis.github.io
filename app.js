@@ -14,61 +14,33 @@
      11. Inicialización
    ========================================================================== */
 
+
 /* ============================================================
    1. CONFIGURACIÓN: categorías e imágenes predeterminadas
    ============================================================ */
 
 const CATEGORIAS = {
-  lacteos: { label: "Lácteos", emoji: "🥛" },
-  granos: { label: "Granos y pastas", emoji: "🍚" },
-  bebidas: { label: "Bebidas", emoji: "🧃" },
-  limpieza: { label: "Limpieza", emoji: "🧴" },
-  higiene: { label: "Higiene", emoji: "🧻" },
-  otros: { label: "Otros", emoji: "📦" },
+  lacteos:   { label: "Lácteos",   emoji: "🥛" },
+  granos:    { label: "Granos y pastas", emoji: "🍚" },
+  bebidas:   { label: "Bebidas",   emoji: "🧃" },
+  limpieza:  { label: "Limpieza",  emoji: "🧴" },
+  higiene:   { label: "Higiene",   emoji: "🧻" },
+  otros:     { label: "Otros",     emoji: "📦" },
 };
 
 // Imágenes seleccionables al crear/editar un producto, agrupadas por categoría.
 const IMAGENES_POR_CATEGORIA = {
-  lacteos: [
-    { emoji: "🥛", nombre: "Leche" },
-    { emoji: "🧀", nombre: "Queso" },
-    { emoji: "🍦", nombre: "Yogur" },
-    { emoji: "🧈", nombre: "Manteca" },
-  ],
-  granos: [
-    { emoji: "🍚", nombre: "Arroz" },
-    { emoji: "🍝", nombre: "Fideos" },
-    { emoji: "🌾", nombre: "Harina" },
-    { emoji: "🥫", nombre: "Legumbres" },
-  ],
-  bebidas: [
-    { emoji: "🧃", nombre: "Jugo" },
-    { emoji: "☕", nombre: "Café" },
-    { emoji: "🍷", nombre: "Vino" },
-    { emoji: "💧", nombre: "Agua" },
-  ],
-  limpieza: [
-    { emoji: "🧴", nombre: "Detergente" },
-    { emoji: "🧼", nombre: "Jabón" },
-    { emoji: "🧽", nombre: "Esponja" },
-    { emoji: "🪣", nombre: "Balde" },
-  ],
-  higiene: [
-    { emoji: "🧻", nombre: "Papel" },
-    { emoji: "🪥", nombre: "Cepillo" },
-    { emoji: "🧷", nombre: "Varios" },
-    { emoji: "🚿", nombre: "Shampoo" },
-  ],
-  otros: [
-    { emoji: "📦", nombre: "Genérico" },
-    { emoji: "🥫", nombre: "Conserva" },
-    { emoji: "🍎", nombre: "Fruta" },
-    { emoji: "🍞", nombre: "Pan" },
-  ],
+  lacteos:  [{ emoji: "🥛", nombre: "Leche" }, { emoji: "🧀", nombre: "Queso" }, { emoji: "🍦", nombre: "Yogur" }, { emoji: "🧈", nombre: "Manteca" }],
+  granos:   [{ emoji: "🍚", nombre: "Arroz" }, { emoji: "🍝", nombre: "Fideos" }, { emoji: "🌾", nombre: "Harina" }, { emoji: "🥫", nombre: "Legumbres" }],
+  bebidas:  [{ emoji: "🧃", nombre: "Jugo" }, { emoji: "☕", nombre: "Café" }, { emoji: "🍷", nombre: "Vino" }, { emoji: "💧", nombre: "Agua" }],
+  limpieza: [{ emoji: "🧴", nombre: "Detergente" }, { emoji: "🧼", nombre: "Jabón" }, { emoji: "🧽", nombre: "Esponja" }, { emoji: "🪣", nombre: "Balde" }],
+  higiene:  [{ emoji: "🧻", nombre: "Papel" }, { emoji: "🪥", nombre: "Cepillo" }, { emoji: "🧷", nombre: "Varios" }, { emoji: "🚿", nombre: "Shampoo" }],
+  otros:    [{ emoji: "📦", nombre: "Genérico" }, { emoji: "🥫", nombre: "Conserva" }, { emoji: "🍎", nombre: "Fruta" }, { emoji: "🍞", nombre: "Pan" }],
 };
 
 const CLAVE_PRODUCTOS = "almacen_productos";
-const CLAVE_COMPRAS = "almacen_compras";
+const CLAVE_COMPRAS   = "almacen_compras";
+
 
 /* ============================================================
    2. STORAGE — única capa que toca localStorage directamente.
@@ -92,7 +64,8 @@ const Storage = {
 };
 
 let productos = Storage.cargarProductos();
-let compras = Storage.cargarCompras();
+let compras   = Storage.cargarCompras();
+
 
 /* ============================================================
    3. PRODUCTOS
@@ -155,6 +128,7 @@ const Productos = {
   },
 };
 
+
 /* ============================================================
    4. VENCIMIENTOS — el estado nunca se guarda: se calcula acá
       cada vez, a partir de la fecha del navegador.
@@ -179,23 +153,21 @@ const Vencimientos = {
     }
     const dias = this.diasRestantes(producto.vencimiento);
     if (dias < 0) return { clave: "vencido", label: "Vencido", tono: "danger" };
-    if (dias <= 2)
-      return { clave: "vence-pronto", label: "Vence pronto", tono: "soon" };
-    if (dias <= 7)
-      return { clave: "proximo", label: "Próximo a vencer", tono: "warn" };
+    if (dias <= 2) return { clave: "vence-pronto", label: "Vence pronto", tono: "soon" };
+    if (dias <= 7) return { clave: "proximo", label: "Próximo a vencer", tono: "warn" };
     return { clave: "normal", label: "Disponible", tono: "ok" };
   },
 
   textoDias(fechaISO) {
     const dias = this.diasRestantes(fechaISO);
     if (dias === null) return "Sin fecha";
-    if (dias < 0)
-      return `Venció hace ${Math.abs(dias)} día${Math.abs(dias) === 1 ? "" : "s"}`;
+    if (dias < 0) return `Venció hace ${Math.abs(dias)} día${Math.abs(dias) === 1 ? "" : "s"}`;
     if (dias === 0) return "Vence hoy";
     if (dias === 1) return "Vence mañana";
     return `Vence en ${dias} días`;
   },
 };
+
 
 /* ============================================================
    5. COMPRAS — lista de compras, independiente del inventario.
@@ -227,22 +199,33 @@ const Compras = {
     Storage.guardarCompras(compras);
   },
 
+  // Al marcar como comprado, si el ítem está ligado a un producto del
+  // inventario, le reponemos 1 unidad de stock automáticamente.
   marcarComprado(compraId) {
+    const item = compras.find((c) => c.id === compraId);
+    if (item && item.productoId) {
+      Productos.sumarCantidad(item.productoId, 1);
+    }
     compras = compras.filter((c) => c.id !== compraId);
     Storage.guardarCompras(compras);
   },
 
   marcarTodosComprados() {
+    compras.forEach((item) => {
+      if (item.productoId) Productos.sumarCantidad(item.productoId, 1);
+    });
     compras = [];
     Storage.guardarCompras(compras);
   },
 };
+
 
 /* ============================================================
    6. RENDER
    ============================================================ */
 
 const Render = {
+
   renderTodo() {
     this.renderDashboard();
     this.renderInventario();
@@ -263,47 +246,18 @@ const Render = {
       const e = Vencimientos.calcularEstado(p);
       return e.clave === "proximo" || e.clave === "vence-pronto";
     }).length;
-    const vencidos = productos.filter(
-      (p) => Vencimientos.calcularEstado(p).clave === "vencido",
-    ).length;
+    const vencidos = productos.filter((p) => Vencimientos.calcularEstado(p).clave === "vencido").length;
     const paraComprar = productos.filter((p) => p.cantidad === 0).length;
 
     const stats = [
-      {
-        valor: total,
-        label: "Productos registrados",
-        tono: "neutral",
-        icon: "bi-house-door",
-      },
-      {
-        valor: disponibles,
-        label: "Con stock disponible",
-        tono: "ok",
-        icon: "bi-check2",
-      },
-      {
-        valor: porVencer,
-        label: "Por vencer",
-        tono: "warn",
-        icon: "bi-clock-history",
-      },
-      {
-        valor: vencidos,
-        label: "Vencidos",
-        tono: "danger",
-        icon: "bi-exclamation-triangle-fill",
-      },
-      {
-        valor: paraComprar,
-        label: "Para comprar",
-        tono: "pink",
-        icon: "bi-cart3",
-      },
+      { valor: total, label: "Productos registrados", tono: "neutral", icon: "bi-house-door" },
+      { valor: disponibles, label: "Con stock disponible", tono: "ok", icon: "bi-check2" },
+      { valor: porVencer, label: "Por vencer", tono: "warn", icon: "bi-clock-history" },
+      { valor: vencidos, label: "Vencidos", tono: "danger", icon: "bi-exclamation-triangle-fill" },
+      { valor: paraComprar, label: "Para comprar", tono: "pink", icon: "bi-cart3" },
     ];
 
-    document.getElementById("statsGrid").innerHTML = stats
-      .map(
-        (s) => `
+    document.getElementById("statsGrid").innerHTML = stats.map((s) => `
       <div class="stat-card tone-${s.tono}">
         <div class="stat-icon"><i class="bi ${s.icon}"></i></div>
         <div>
@@ -311,9 +265,7 @@ const Render = {
           <div class="stat-label">${s.label}</div>
         </div>
       </div>
-    `,
-      )
-      .join("");
+    `).join("");
 
     const proximos = productos
       .filter((p) => p.cantidad > 0 && p.vencimiento)
@@ -323,9 +275,7 @@ const Render = {
 
     const contProx = document.getElementById("listaVencimientosProximos");
     contProx.innerHTML = proximos.length
-      ? proximos
-          .map(
-            ({ p }) => `
+      ? proximos.map(({ p }) => `
         <div class="mini-row">
           <div class="mini-left">
             <span class="mini-emoji">${p.imagen}</span>
@@ -336,18 +286,15 @@ const Render = {
           </div>
           ${this.pill(Vencimientos.calcularEstado(p))}
         </div>
-      `,
-          )
-          .join("")
+      `).join("")
       : `<p class="empty-state">No hay productos por vencer en los próximos 7 días.</p>`;
 
     const sinStock = productos.filter((p) => p.cantidad === 0);
     const contComprar = document.getElementById("listaNecesitoComprar");
     contComprar.innerHTML = sinStock.length
-      ? sinStock
-          .map((p) => {
-            const yaEnLista = compras.some((c) => c.productoId === p.id);
-            return `
+      ? sinStock.map((p) => {
+          const yaEnLista = compras.some((c) => c.productoId === p.id);
+          return `
           <div class="mini-row">
             <div class="mini-left">
               <span class="mini-emoji">${p.imagen}</span>
@@ -356,15 +303,12 @@ const Render = {
                 <div class="mini-sub">Stock: 0</div>
               </div>
             </div>
-            ${
-              yaEnLista
-                ? `<span class="pill-estado pill-neutral">En la lista</span>`
-                : `<button class="btn-mini" data-add-compra="${p.id}">Agregar a compras</button>`
-            }
+            ${yaEnLista
+              ? `<span class="pill-estado pill-neutral">En la lista</span>`
+              : `<button class="btn-mini" data-add-compra="${p.id}">Agregar a compras</button>`}
           </div>
         `;
-          })
-          .join("")
+        }).join("")
       : `<p class="empty-state">No falta reponer nada por ahora.</p>`;
 
     // Banner "todo en orden" / alerta, con la mascota.
@@ -387,11 +331,10 @@ const Render = {
     }
     empty.classList.add("d-none");
 
-    grid.innerHTML = filtrados
-      .map((p) => {
-        const estado = Vencimientos.calcularEstado(p);
-        const cat = CATEGORIAS[p.categoria] || CATEGORIAS.otros;
-        return `
+    grid.innerHTML = filtrados.map((p) => {
+      const estado = Vencimientos.calcularEstado(p);
+      const cat = CATEGORIAS[p.categoria] || CATEGORIAS.otros;
+      return `
         <div class="product-card">
           <span class="card-emoji">${p.imagen}</span>
           <div class="card-nombre">${p.nombre}</div>
@@ -400,18 +343,15 @@ const Render = {
           <div class="card-venc">${p.vencimiento ? "Vence: " + this.formatearFecha(p.vencimiento) : "Sin vencimiento"}</div>
           ${this.pill(estado)}
           <div class="card-actions">
-            ${
-              p.cantidad > 0
-                ? `<button class="btn-consumir" data-consumir="${p.id}"><i class="bi bi-dash-lg"></i> Consumir</button>`
-                : `<button class="btn-agregarstock" data-consumir="${p.id}"><i class="bi bi-plus-lg"></i> Agregar</button>`
-            }
+            ${p.cantidad > 0
+              ? `<button class="btn-consumir" data-consumir="${p.id}"><i class="bi bi-dash-lg"></i> Consumir</button>`
+              : `<button class="btn-agregarstock" data-consumir="${p.id}"><i class="bi bi-plus-lg"></i> Agregar</button>`}
             <button class="btn-editar" data-editar="${p.id}">Editar</button>
             <button class="btn-eliminar" data-eliminar="${p.id}"><i class="bi bi-trash3"></i></button>
           </div>
         </div>
       `;
-      })
-      .join("");
+    }).join("");
   },
 
   formatearFecha(iso) {
@@ -430,9 +370,7 @@ const Render = {
         return e.clave === "proximo" || e.clave === "vence-pronto";
       });
     } else if (tab === "vencidos") {
-      lista = lista.filter(
-        (p) => Vencimientos.calcularEstado(p).clave === "vencido",
-      );
+      lista = lista.filter((p) => Vencimientos.calcularEstado(p).clave === "vencido");
     } else if (tab === "sin-fecha") {
       lista = lista.filter((p) => !p.vencimiento && p.cantidad > 0);
     }
@@ -455,10 +393,9 @@ const Render = {
     }
     empty.classList.add("d-none");
 
-    body.innerHTML = lista
-      .map((p) => {
-        const estado = Vencimientos.calcularEstado(p);
-        return `
+    body.innerHTML = lista.map((p) => {
+      const estado = Vencimientos.calcularEstado(p);
+      return `
         <tr>
           <td>
             <div class="prod-cell">
@@ -470,8 +407,7 @@ const Render = {
           <td>${this.pill(estado)}</td>
         </tr>
       `;
-      })
-      .join("");
+    }).join("");
   },
 
   // ---------- Compras ----------
@@ -489,41 +425,35 @@ const Render = {
     empty.classList.add("d-none");
     btnTodos.classList.remove("d-none");
 
-    lista.innerHTML = compras
-      .map(
-        (c) => `
+    lista.innerHTML = compras.map((c) => `
       <li>
         <input type="checkbox" data-comprado="${c.id}">
         <span class="mini-emoji">${c.emoji}</span>
         <span class="item-nombre">${c.nombre}</span>
+        ${c.productoId ? `<span class="item-sub">Repone stock</span>` : ""}
       </li>
-    `,
-      )
-      .join("");
+    `).join("");
   },
 
   renderBadgeCompras() {
     const n = compras.length;
-    document
-      .querySelectorAll("#badgeCompras, #badgeComprasMobile")
-      .forEach((el) => {
-        el.textContent = n;
-        el.classList.toggle("show", n > 0);
-      });
+    document.querySelectorAll("#badgeCompras, #badgeComprasMobile").forEach((el) => {
+      el.textContent = n;
+      el.classList.toggle("show", n > 0);
+    });
   },
 
   poblarSelectCategorias() {
     const selectFiltro = document.getElementById("filtroCategoria");
     const selectForm = document.getElementById("inputCategoria");
     const opciones = Object.entries(CATEGORIAS)
-      .map(([clave, c]) => `<option value="${clave}">${c.label}</option>`)
-      .join("");
+      .map(([clave, c]) => `<option value="${clave}">${c.label}</option>`).join("");
 
     selectForm.innerHTML = opciones;
-    selectFiltro.innerHTML =
-      `<option value="todas">Todas las categorías</option>` + opciones;
+    selectFiltro.innerHTML = `<option value="todas">Todas las categorías</option>` + opciones;
   },
 };
+
 
 /* ============================================================
    7. BÚSQUEDA / FILTROS
@@ -537,27 +467,22 @@ const Filtros = {
 
   aplicar(lista) {
     return lista.filter((p) => {
-      const coincideTexto = p.nombre
-        .toLowerCase()
-        .includes(this.texto.toLowerCase());
-      const coincideCategoria =
-        this.categoria === "todas" || p.categoria === this.categoria;
+      const coincideTexto = p.nombre.toLowerCase().includes(this.texto.toLowerCase());
+      const coincideCategoria = this.categoria === "todas" || p.categoria === this.categoria;
 
       let coincideEstado = true;
       if (this.estado !== "todos") {
         const estado = Vencimientos.calcularEstado(p);
         if (this.estado === "disponible") coincideEstado = p.cantidad > 0;
         if (this.estado === "sin-stock") coincideEstado = p.cantidad === 0;
-        if (this.estado === "por-vencer")
-          coincideEstado =
-            estado.clave === "proximo" || estado.clave === "vence-pronto";
-        if (this.estado === "vencido")
-          coincideEstado = estado.clave === "vencido";
+        if (this.estado === "por-vencer") coincideEstado = estado.clave === "proximo" || estado.clave === "vence-pronto";
+        if (this.estado === "vencido") coincideEstado = estado.clave === "vencido";
       }
       return coincideTexto && coincideCategoria && coincideEstado;
     });
   },
 };
+
 
 /* ============================================================
    8. FORMULARIOS — modal de agregar/editar producto,
@@ -595,30 +520,21 @@ const Formularios = {
   },
 
   renderImagePicker(categoria, seleccionada) {
-    const opciones =
-      IMAGENES_POR_CATEGORIA[categoria] || IMAGENES_POR_CATEGORIA.otros;
+    const opciones = IMAGENES_POR_CATEGORIA[categoria] || IMAGENES_POR_CATEGORIA.otros;
     if (!seleccionada) seleccionada = opciones[0].emoji;
     this.imagenSeleccionada = seleccionada;
 
     const cont = document.getElementById("imagePicker");
-    cont.innerHTML = opciones
-      .map(
-        (op) => `
+    cont.innerHTML = opciones.map((op) => `
       <button type="button" class="img-opt ${op.emoji === seleccionada ? "selected" : ""}" data-imagen="${op.emoji}">
         <span class="img-emoji">${op.emoji}</span>
         <span class="img-nombre">${op.nombre}</span>
       </button>
-    `,
-      )
-      .join("");
+    `).join("");
   },
 
-  mostrarModal() {
-    document.getElementById("modalOverlay").classList.remove("d-none");
-  },
-  ocultarModal() {
-    document.getElementById("modalOverlay").classList.add("d-none");
-  },
+  mostrarModal() { document.getElementById("modalOverlay").classList.remove("d-none"); },
+  ocultarModal() { document.getElementById("modalOverlay").classList.add("d-none"); },
 
   guardar(e) {
     e.preventDefault();
@@ -655,6 +571,7 @@ const Formularios = {
   },
 };
 
+
 /* ============================================================
    9. CONSUMO MODAL — consumir o agregar stock con stepper.
       La cantidad del stepper es "cuánto mover", no el stock total.
@@ -672,11 +589,8 @@ const ConsumoModal = {
 
     document.getElementById("consumoIcon").textContent = p.imagen;
     document.getElementById("consumoNombre").textContent = p.nombre;
-    document.getElementById("consumoCategoria").textContent = (
-      CATEGORIAS[p.categoria] || CATEGORIAS.otros
-    ).label;
-    document.getElementById("consumoStockActual").textContent =
-      `${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}`;
+    document.getElementById("consumoCategoria").textContent = (CATEGORIAS[p.categoria] || CATEGORIAS.otros).label;
+    document.getElementById("consumoStockActual").textContent = `${p.cantidad} unidad${p.cantidad === 1 ? "" : "es"}`;
     document.getElementById("consumoCantidad").textContent = this.cantidadMover;
 
     const btnConsumir = document.getElementById("consumoConfirmar");
@@ -686,9 +600,7 @@ const ConsumoModal = {
     document.getElementById("consumoOverlay").classList.remove("d-none");
   },
 
-  cerrar() {
-    document.getElementById("consumoOverlay").classList.add("d-none");
-  },
+  cerrar() { document.getElementById("consumoOverlay").classList.add("d-none"); },
 
   ajustar(delta) {
     const p = Productos.obtener(this.productoId);
@@ -713,15 +625,14 @@ const ConsumoModal = {
   },
 };
 
+
 /* ============================================================
    10. NAVEGACIÓN entre vistas
    ============================================================ */
 
 const Navegacion = {
   irA(vista) {
-    document
-      .querySelectorAll(".view")
-      .forEach((v) => v.classList.add("d-none"));
+    document.querySelectorAll(".view").forEach((v) => v.classList.add("d-none"));
     document.getElementById("view-" + vista).classList.remove("d-none");
 
     document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
@@ -729,6 +640,7 @@ const Navegacion = {
     });
   },
 };
+
 
 /* ============================================================
    11. DATOS INICIALES (solo si localStorage está vacío)
@@ -745,99 +657,37 @@ function cargarDatosIniciales() {
   };
 
   productos = [
-    {
-      id: Productos.generarId(),
-      nombre: "Leche",
-      categoria: "lacteos",
-      cantidad: 3,
-      vencimiento: enDias(1),
-      imagen: "🥛",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Arroz",
-      categoria: "granos",
-      cantidad: 2,
-      vencimiento: enDias(120),
-      imagen: "🍚",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Fideos",
-      categoria: "granos",
-      cantidad: 5,
-      vencimiento: enDias(200),
-      imagen: "🍝",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Yogur",
-      categoria: "lacteos",
-      cantidad: 2,
-      vencimiento: enDias(3),
-      imagen: "🍦",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Atún",
-      categoria: "otros",
-      cantidad: 0,
-      vencimiento: enDias(300),
-      imagen: "🥫",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Detergente",
-      categoria: "limpieza",
-      cantidad: 1,
-      vencimiento: null,
-      imagen: "🧴",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Papel higiénico",
-      categoria: "higiene",
-      cantidad: 0,
-      vencimiento: null,
-      imagen: "🧻",
-    },
-    {
-      id: Productos.generarId(),
-      nombre: "Queso",
-      categoria: "lacteos",
-      cantidad: 1,
-      vencimiento: enDias(-1),
-      imagen: "🧀",
-    },
+    { id: Productos.generarId(), nombre: "Leche", categoria: "lacteos", cantidad: 3, vencimiento: enDias(1), imagen: "🥛" },
+    { id: Productos.generarId(), nombre: "Arroz", categoria: "granos", cantidad: 2, vencimiento: enDias(120), imagen: "🍚" },
+    { id: Productos.generarId(), nombre: "Fideos", categoria: "granos", cantidad: 5, vencimiento: enDias(200), imagen: "🍝" },
+    { id: Productos.generarId(), nombre: "Yogur", categoria: "lacteos", cantidad: 2, vencimiento: enDias(3), imagen: "🍦" },
+    { id: Productos.generarId(), nombre: "Atún", categoria: "otros", cantidad: 0, vencimiento: enDias(300), imagen: "🥫" },
+    { id: Productos.generarId(), nombre: "Detergente", categoria: "limpieza", cantidad: 1, vencimiento: null, imagen: "🧴" },
+    { id: Productos.generarId(), nombre: "Papel higiénico", categoria: "higiene", cantidad: 0, vencimiento: null, imagen: "🧻" },
+    { id: Productos.generarId(), nombre: "Queso", categoria: "lacteos", cantidad: 1, vencimiento: enDias(-1), imagen: "🧀" },
   ];
   Storage.guardarProductos(productos);
 }
+
 
 /* ============================================================
    12. EVENTOS
    ============================================================ */
 
 function inicializarEventos() {
+
   // --- Navegación (sidebar + bottom nav) ---
   document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
     btn.addEventListener("click", () => Navegacion.irA(btn.dataset.view));
   });
 
   // --- Abrir modal de agregar ---
-  document
-    .getElementById("btnAddSidebar")
-    .addEventListener("click", () => Formularios.abrirParaAgregar());
-  document
-    .getElementById("btnAddFab")
-    .addEventListener("click", () => Formularios.abrirParaAgregar());
+  document.getElementById("btnAddSidebar").addEventListener("click", () => Formularios.abrirParaAgregar());
+  document.getElementById("btnAddFab").addEventListener("click", () => Formularios.abrirParaAgregar());
 
   // --- Modal producto: cerrar ---
-  document
-    .getElementById("modalClose")
-    .addEventListener("click", () => Formularios.ocultarModal());
-  document
-    .getElementById("btnCancelarForm")
-    .addEventListener("click", () => Formularios.ocultarModal());
+  document.getElementById("modalClose").addEventListener("click", () => Formularios.ocultarModal());
+  document.getElementById("btnCancelarForm").addEventListener("click", () => Formularios.ocultarModal());
   document.getElementById("modalOverlay").addEventListener("click", (e) => {
     if (e.target.id === "modalOverlay") Formularios.ocultarModal();
   });
@@ -850,46 +700,28 @@ function inicializarEventos() {
     const btn = e.target.closest(".img-opt");
     if (!btn) return;
     Formularios.imagenSeleccionada = btn.dataset.imagen;
-    document
-      .querySelectorAll(".img-opt")
-      .forEach((b) => b.classList.remove("selected"));
+    document.querySelectorAll(".img-opt").forEach((b) => b.classList.remove("selected"));
     btn.classList.add("selected");
   });
 
-  document
-    .getElementById("formProducto")
-    .addEventListener("submit", (e) => Formularios.guardar(e));
+  document.getElementById("formProducto").addEventListener("submit", (e) => Formularios.guardar(e));
 
   // --- Confirmación de eliminación ---
-  document
-    .getElementById("btnCancelarEliminar")
-    .addEventListener("click", () => Formularios.cerrarConfirmacion());
-  document
-    .getElementById("btnConfirmarEliminar")
-    .addEventListener("click", () => Formularios.confirmarEliminar());
+  document.getElementById("btnCancelarEliminar").addEventListener("click", () => Formularios.cerrarConfirmacion());
+  document.getElementById("btnConfirmarEliminar").addEventListener("click", () => Formularios.confirmarEliminar());
   document.getElementById("confirmOverlay").addEventListener("click", (e) => {
     if (e.target.id === "confirmOverlay") Formularios.cerrarConfirmacion();
   });
 
   // --- Modal de consumo ---
-  document
-    .getElementById("consumoClose")
-    .addEventListener("click", () => ConsumoModal.cerrar());
+  document.getElementById("consumoClose").addEventListener("click", () => ConsumoModal.cerrar());
   document.getElementById("consumoOverlay").addEventListener("click", (e) => {
     if (e.target.id === "consumoOverlay") ConsumoModal.cerrar();
   });
-  document
-    .getElementById("consumoMenos")
-    .addEventListener("click", () => ConsumoModal.ajustar(-1));
-  document
-    .getElementById("consumoMas")
-    .addEventListener("click", () => ConsumoModal.ajustar(1));
-  document
-    .getElementById("consumoConfirmar")
-    .addEventListener("click", () => ConsumoModal.confirmarConsumir());
-  document
-    .getElementById("consumoAgregarStock")
-    .addEventListener("click", () => ConsumoModal.confirmarAgregar());
+  document.getElementById("consumoMenos").addEventListener("click", () => ConsumoModal.ajustar(-1));
+  document.getElementById("consumoMas").addEventListener("click", () => ConsumoModal.ajustar(1));
+  document.getElementById("consumoConfirmar").addEventListener("click", () => ConsumoModal.confirmarConsumir());
+  document.getElementById("consumoAgregarStock").addEventListener("click", () => ConsumoModal.confirmarAgregar());
 
   // --- Búsqueda ---
   document.getElementById("inputBuscar").addEventListener("input", (e) => {
@@ -901,9 +733,7 @@ function inicializarEventos() {
   document.getElementById("filtrosEstado").addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
-    document
-      .querySelectorAll("#filtrosEstado .chip")
-      .forEach((c) => c.classList.remove("active"));
+    document.querySelectorAll("#filtrosEstado .chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     Filtros.estado = chip.dataset.filter;
     Render.renderInventario();
@@ -919,9 +749,7 @@ function inicializarEventos() {
   document.getElementById("tabsVencimientos").addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (!chip) return;
-    document
-      .querySelectorAll("#tabsVencimientos .chip")
-      .forEach((c) => c.classList.remove("active"));
+    document.querySelectorAll("#tabsVencimientos .chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     Filtros.tabVencimientos = chip.dataset.tabVenc;
     Render.renderVencimientos();
@@ -935,22 +763,16 @@ function inicializarEventos() {
 
     if (consumir) ConsumoModal.abrir(consumir.dataset.consumir);
     if (editar) Formularios.abrirParaEditar(editar.dataset.editar);
-    if (eliminar)
-      Formularios.pedirConfirmacionEliminar(eliminar.dataset.eliminar);
+    if (eliminar) Formularios.pedirConfirmacionEliminar(eliminar.dataset.eliminar);
   });
 
   // --- "Agregar a compras" desde el dashboard ---
-  document
-    .getElementById("listaNecesitoComprar")
-    .addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-add-compra]");
-      if (!btn) return;
-      const p = Productos.obtener(btn.dataset.addCompra);
-      if (p) {
-        Compras.agregarDesdeProducto(p);
-        Render.renderTodo();
-      }
-    });
+  document.getElementById("listaNecesitoComprar").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add-compra]");
+    if (!btn) return;
+    const p = Productos.obtener(btn.dataset.addCompra);
+    if (p) { Compras.agregarDesdeProducto(p); Render.renderTodo(); }
+  });
 
   // --- Lista de compras: marcar como comprado ---
   document.getElementById("shoppingList").addEventListener("change", (e) => {
@@ -961,34 +783,25 @@ function inicializarEventos() {
   });
 
   // --- Marcar todos como comprados ---
-  document
-    .getElementById("btnMarcarTodosComprados")
-    .addEventListener("click", () => {
-      Compras.marcarTodosComprados();
-      Render.renderTodo();
-    });
+  document.getElementById("btnMarcarTodosComprados").addEventListener("click", () => {
+    Compras.marcarTodosComprados();
+    Render.renderTodo();
+  });
 
   // --- Modal: agregar item manual a la lista de compras ---
-  document
-    .getElementById("btnAbrirAgregarCompra")
-    .addEventListener("click", () => {
-      document.getElementById("formCompraItem").reset();
-      document.getElementById("compraItemOverlay").classList.remove("d-none");
-    });
+  document.getElementById("btnAbrirAgregarCompra").addEventListener("click", () => {
+    document.getElementById("formCompraItem").reset();
+    document.getElementById("compraItemOverlay").classList.remove("d-none");
+  });
   document.getElementById("compraItemClose").addEventListener("click", () => {
     document.getElementById("compraItemOverlay").classList.add("d-none");
   });
-  document
-    .getElementById("btnCancelarCompraItem")
-    .addEventListener("click", () => {
-      document.getElementById("compraItemOverlay").classList.add("d-none");
-    });
-  document
-    .getElementById("compraItemOverlay")
-    .addEventListener("click", (e) => {
-      if (e.target.id === "compraItemOverlay")
-        document.getElementById("compraItemOverlay").classList.add("d-none");
-    });
+  document.getElementById("btnCancelarCompraItem").addEventListener("click", () => {
+    document.getElementById("compraItemOverlay").classList.add("d-none");
+  });
+  document.getElementById("compraItemOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "compraItemOverlay") document.getElementById("compraItemOverlay").classList.add("d-none");
+  });
   document.getElementById("formCompraItem").addEventListener("submit", (e) => {
     e.preventDefault();
     const nombre = document.getElementById("inputCompraNombre").value.trim();
@@ -998,6 +811,7 @@ function inicializarEventos() {
     Render.renderTodo();
   });
 }
+
 
 /* ============================================================
    13. INICIALIZACIÓN
