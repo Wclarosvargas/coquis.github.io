@@ -177,9 +177,19 @@
     <form id="formProducto">
       <input type="hidden" id="productoId">
 
-      <button type="button" class="btn-scan" id="btnEscanear">
-        <i class="bi bi-upc-scan"></i> Escanear código de barras
-      </button>
+      <div id="accionesCodigo">
+        <button type="button" class="btn-scan" id="btnEscanear">
+          <i class="bi bi-upc-scan"></i> Escanear código de barras
+        </button>
+        <button type="button" class="btn-scan d-none" id="btnBuscarFoto">
+          <i class="bi bi-image"></i> Buscar foto con el código guardado
+        </button>
+      </div>
+
+      <div class="foto-preview d-none" id="fotoPreview">
+        <img id="fotoPreviewImg" src="" alt="Foto del producto">
+        <button type="button" class="btn-quitar-foto" id="btnQuitarFoto"><i class="bi bi-x-lg"></i> Quitar foto</button>
+      </div>
 
       <div class="row g-3 mt-0">
         <div class="col-6">
