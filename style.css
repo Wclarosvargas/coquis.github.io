@@ -664,3 +664,42 @@ h1, h2, h3, .brand-name, .stat-value, .banner-title {
   font-size: 0.82rem;
   margin: 0;
 }
+
+/* ---------------- Escaneo de código de barras ---------------- */
+
+.btn-scan {
+  width: 100%;
+  background: var(--beige);
+  border: 1px dashed var(--brown-soft);
+  color: var(--brown-dark);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.86rem;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.btn-scan:hover { background: var(--pink); border-color: transparent; }
+
+#scannerReader {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #111;
+  min-height: 220px;
+}
+#scannerReader video { width: 100% !important; border-radius: var(--radius-sm); }
+#scannerReader img { display: none; }
+
+.scanner-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+.scanner-error {
+  font-size: 0.8rem;
+  color: var(--danger-bg);
+  margin: 8px 0 0;
+  font-weight: 700;
+}
