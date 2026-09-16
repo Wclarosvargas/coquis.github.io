@@ -170,6 +170,30 @@ const Vencimientos = {
 
 
 /* ============================================================
+   5-B. TOAST — feedback visual breve para confirmar acciones.
+   ============================================================ */
+
+const Toast = {
+  iconos: { ok: "bi-check2-circle", info: "bi-info-circle", danger: "bi-exclamation-circle" },
+
+  mostrar(mensaje, tipo = "ok") {
+    const cont = document.getElementById("toastContainer");
+    const el = document.createElement("div");
+    el.className = `toast-item toast-${tipo}`;
+    el.innerHTML = `<i class="bi ${this.iconos[tipo] || this.iconos.ok}"></i><span>${mensaje}</span>`;
+    cont.appendChild(el);
+
+    requestAnimationFrame(() => el.classList.add("show"));
+
+    setTimeout(() => {
+      el.classList.remove("show");
+      setTimeout(() => el.remove(), 300);
+    }, 2400);
+  },
+};
+
+
+/* ============================================================
    5. COMPRAS — lista de compras, independiente del inventario.
       Un ítem se agrega solo cuando el usuario lo pide
       explícitamente (desde el dashboard o desde "Agregar producto"
@@ -549,8 +573,10 @@ const Formularios = {
 
     if (this.idEnEdicion) {
       Productos.editar(this.idEnEdicion, datos);
+      Toast.mostrar(`"${datos.nombre}" actualizado`);
     } else {
       Productos.agregar(datos);
+      Toast.mostrar(`"${datos.nombre}" agregado al inventario`);
     }
     this.ocultarModal();
     Render.renderTodo();
@@ -565,7 +591,11 @@ const Formularios = {
     document.getElementById("confirmOverlay").classList.add("d-none");
   },
   confirmarEliminar() {
-    if (this.idParaEliminar) Productos.eliminar(this.idParaEliminar);
+    if (this.idParaEliminar) {
+      const p = Productos.obtener(this.idParaEliminar);
+      Productos.eliminar(this.idParaEliminar);
+      if (p) Toast.mostrar(`"${p.nombre}" eliminado`, "danger");
+    }
     this.cerrarConfirmacion();
     Render.renderTodo();
   },
@@ -612,14 +642,18 @@ const ConsumoModal = {
 
   confirmarConsumir() {
     if (!this.productoId) return;
+    const p = Productos.obtener(this.productoId);
     Productos.consumirCantidad(this.productoId, this.cantidadMover);
+    if (p) Toast.mostrar(`Consumiste ${this.cantidadMover} de "${p.nombre}"`);
     this.cerrar();
     Render.renderTodo();
   },
 
   confirmarAgregar() {
     if (!this.productoId) return;
+    const p = Productos.obtener(this.productoId);
     Productos.sumarCantidad(this.productoId, this.cantidadMover);
+    if (p) Toast.mostrar(`Agregaste ${this.cantidadMover} a "${p.nombre}"`);
     this.cerrar();
     Render.renderTodo();
   },
@@ -771,7 +805,11 @@ function inicializarEventos() {
     const btn = e.target.closest("[data-add-compra]");
     if (!btn) return;
     const p = Productos.obtener(btn.dataset.addCompra);
-    if (p) { Compras.agregarDesdeProducto(p); Render.renderTodo(); }
+    if (p) {
+      Compras.agregarDesdeProducto(p);
+      Toast.mostrar(`"${p.nombre}" agregado a la lista de compras`, "info");
+      Render.renderTodo();
+    }
   });
 
   // --- Lista de compras: marcar como comprado ---
@@ -779,12 +817,14 @@ function inicializarEventos() {
     const check = e.target.closest("[data-comprado]");
     if (!check) return;
     Compras.marcarComprado(check.dataset.comprado);
+    Toast.mostrar("Comprado ✔️");
     Render.renderTodo();
   });
 
   // --- Marcar todos como comprados ---
   document.getElementById("btnMarcarTodosComprados").addEventListener("click", () => {
     Compras.marcarTodosComprados();
+    Toast.mostrar("Lista de compras vaciada");
     Render.renderTodo();
   });
 
@@ -807,6 +847,7 @@ function inicializarEventos() {
     const nombre = document.getElementById("inputCompraNombre").value.trim();
     if (!nombre) return;
     Compras.agregarManual(nombre);
+    Toast.mostrar(`"${nombre}" agregado a la lista`, "info");
     document.getElementById("compraItemOverlay").classList.add("d-none");
     Render.renderTodo();
   });
